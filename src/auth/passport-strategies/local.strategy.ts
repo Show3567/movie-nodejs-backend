@@ -46,6 +46,7 @@ const verifyCallback: VerifyFunction = async (
 passport.use(new LocalStrategy(customFields, verifyCallback));
 
 passport.serializeUser((user: any, done: DoneFunction) => {
+	console.log(user.id);
 	const email = (user as User).email;
 	done(null, email);
 });

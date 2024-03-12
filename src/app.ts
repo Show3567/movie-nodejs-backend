@@ -7,22 +7,18 @@ import dotenv from "dotenv";
 import "./auth/passport-strategies/local.strategy";
 import "./auth/passport-strategies/jwt.strategy";
 
-import TypeOrmDbConnection, {
-	AppDataSource,
-} from "./core/db_typeorm";
+import TypeOrmDbConnection from "./core/db_typeorm";
 import Routers from "./core/routes";
-import { SessionEntity } from "./core/entities/SessionEntity";
-import { TypeormStore } from "connect-typeorm";
 
 (async () => {
-	const MongoDBStore = connectMongoDBSession(session);
 	const port = process.env.PORT || 4231;
 	const app: Express = express();
 	const envSetup = dotenv.config();
+	const typeOrmConnection = await TypeOrmDbConnection();
+	const MongoDBStore = connectMongoDBSession(session);
 
-	await TypeOrmDbConnection();
 	const store = new MongoDBStore({
-		uri: process.env.MODB_URL || "", // Replace 'yourMongoDBUri' with your actual MongoDB URI
+		uri: process.env.MODB_URL || "",
 		collection: "mongoDB_Session",
 	});
 	store.on("error", (error: Error) => {
@@ -31,7 +27,7 @@ import { TypeormStore } from "connect-typeorm";
 
 	app.use(
 		session({
-			store,
+			store: store,
 			secret: process.env.JWT_SECRET || "",
 			resave: false,
 			saveUninitialized: false,
@@ -44,12 +40,6 @@ import { TypeormStore } from "connect-typeorm";
 
 	app.use(passport.initialize());
 	app.use(passport.session());
-
-	// app.use((req, res, next) => {
-	// 	console.log(req.session);
-	// 	console.log(req.user);
-	// 	next();
-	// });
 
 	const routers = Routers(app);
 
