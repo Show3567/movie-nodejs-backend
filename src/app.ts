@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import passport from "passport";
 import session from "express-session";
+import connectMongoDBSession from "connect-mongodb-session";
 import dotenv from "dotenv";
 
 import "./auth/passport-strategies/local.strategy";
@@ -11,25 +12,44 @@ import TypeOrmDbConnection, {
 } from "./core/db_typeorm";
 import Routers from "./core/routes";
 import { SessionEntity } from "./core/entities/SessionEntity";
+import { TypeormStore } from "connect-typeorm";
 
 (async () => {
+	const MongoDBStore = connectMongoDBSession(session);
 	const port = process.env.PORT || 4231;
 	const app: Express = express();
 	const envSetup = dotenv.config();
 
 	await TypeOrmDbConnection();
+	const store = new MongoDBStore({
+		uri: process.env.MODB_URL || "", // Replace 'yourMongoDBUri' with your actual MongoDB URI
+		collection: "mongoDB_Session",
+	});
+	store.on("error", (error: Error) => {
+		console.error(error);
+	});
 
 	app.use(
 		session({
+			store,
 			secret: process.env.JWT_SECRET || "",
 			resave: false,
 			saveUninitialized: false,
-			cookie: { secure: true, maxAge: 1000 * 3600 * 24 }, // Example cookie settings
+			cookie: {
+				secure: true,
+				maxAge: 1000 * 3600 * 24,
+			},
 		})
 	);
 
 	app.use(passport.initialize());
 	app.use(passport.session());
+
+	// app.use((req, res, next) => {
+	// 	console.log(req.session);
+	// 	console.log(req.user);
+	// 	next();
+	// });
 
 	const routers = Routers(app);
 
@@ -76,4 +96,8 @@ import { SessionEntity } from "./core/entities/SessionEntity";
   & add express-session;
   $ npm install express-session
   $ npm install @types/express-session @types/express --save-dev
+
+  & add mongodb session, cz the typeorm store query builder not supported by MongoDB;
+  $ npm install connect-mongodb-session express-session
+
 */

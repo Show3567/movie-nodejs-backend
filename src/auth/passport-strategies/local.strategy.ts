@@ -46,10 +46,12 @@ const verifyCallback: VerifyFunction = async (
 passport.use(new LocalStrategy(customFields, verifyCallback));
 
 passport.serializeUser((user: any, done: DoneFunction) => {
-	done(null, (user as User).email);
+	const email = (user as User).email;
+	done(null, email);
 });
 passport.deserializeUser(
 	async (email: string, done: DoneFunction) => {
+		console.log("email: ", email);
 		try {
 			const user = await userRepository.findOne({
 				where: { email },

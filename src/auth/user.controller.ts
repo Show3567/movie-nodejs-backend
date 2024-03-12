@@ -104,8 +104,8 @@ const getUsers: RequestHandler = async (
 
 userRouters.route("/signin").post(
 	passport.authenticate("local", {
-		failureRedirect: "/login-failed",
-		successRedirect: "/login-success",
+		failureRedirect: "/api/v1/auth/login-failed",
+		successRedirect: "/api/v1/auth/login-success",
 	})
 );
 userRouters.route("/login-failed").get((req, res) => {

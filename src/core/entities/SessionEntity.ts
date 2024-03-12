@@ -11,23 +11,23 @@ import {
 @Entity("sessions")
 export class SessionEntity implements ISession {
 	@PrimaryColumn("varchar", { length: 255 })
-	id!: string;
+	id: string;
 
 	@Index()
 	@Column("bigint")
-	expiredAt!: number;
+	expiredAt: number;
 
 	@Column("text")
-	data!: string;
+	data: string;
 
 	@Column("text")
-	json!: string;
+	json: string;
 
 	@CreateDateColumn()
-	createdAt!: Date;
+	createdAt: Date;
 
 	@UpdateDateColumn()
-	updatedAt!: Date;
+	updatedAt: Date;
 
 	@UpdateDateColumn({ nullable: true })
 	destroyedAt?: Date;

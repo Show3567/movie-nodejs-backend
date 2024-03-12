@@ -1,30 +1,30 @@
 import { Column, Entity, ObjectIdColumn } from "typeorm";
 import { UserRole } from "../enum/user-role.enum";
 
-@Entity()
+@Entity("user")
 export class User {
 	//   @PrimaryGeneratedColumn() // using uuid;
 	@ObjectIdColumn() // for mongodb;
-	id!: string;
+	id: string;
 
 	@Column()
-	username!: string;
+	username: string;
 
 	@Column({ unique: true })
-	email!: string;
+	email: string;
 
 	@Column()
-	password!: string;
+	password: string;
 
 	@Column({
 		type: "enum",
 		enum: UserRole,
 		default: UserRole.USER,
 	})
-	role!: UserRole;
+	role: UserRole;
 
 	@Column()
-	tmdb_key!: string;
+	tmdb_key: string;
 
 	// Add method to validate password
 	validatePassword(password: string): boolean {

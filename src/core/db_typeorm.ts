@@ -3,13 +3,14 @@ import dotenv from "dotenv";
 dotenv.config();
 import { DataSource } from "typeorm";
 import { User } from "../auth/entities/user.entity";
+import { SessionEntity } from "./entities/SessionEntity";
 
 export const AppDataSource = new DataSource({
 	type: "mongodb",
 	url: process.env.MODB_URL,
 	useUnifiedTopology: true,
 	useNewUrlParser: true,
-	entities: [User],
+	entities: [User, SessionEntity],
 	synchronize: true,
 });
 
