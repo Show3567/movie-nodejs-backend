@@ -9,6 +9,7 @@ import { UserRole } from "./enum/user-role.enum";
 import { CheckEmailDto } from "./dto/check-email.dto";
 import { genPassword } from "./passport-strategies/passport-util/passport-util";
 import passport from "passport";
+import { isAuth } from "./auth.middleware";
 
 dotenv.config();
 const userRouters = express.Router();
@@ -22,7 +23,6 @@ const createToken = function (user: User) {
 		email: user.email,
 		tmdb_key: user.tmdb_key,
 	};
-	console.log("secret: ", process.env.JWT_SECRET);
 	const accessToken: string = jwt.sign(
 		payload,
 		process.env.JWT_SECRET || "",
@@ -116,6 +116,6 @@ userRouters.route("/login-success").get((req, res) => {
 });
 
 userRouters.route("/signup").post(signUp);
-userRouters.route("/check-email").post(checkEmail);
+userRouters.route("/check-email").post(isAuth as any, checkEmail);
 
 export default userRouters;

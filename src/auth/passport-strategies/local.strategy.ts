@@ -50,9 +50,9 @@ passport.serializeUser((user: any, done: DoneFunction) => {
 	const email = (user as User).email;
 	done(null, email);
 });
+// cz the deserializeUser not work, and I cannot fix it, it's round 2:45;
 passport.deserializeUser(
 	async (email: string, done: DoneFunction) => {
-		console.log("email: ", email);
 		try {
 			const user = await userRepository.findOne({
 				where: { email },
