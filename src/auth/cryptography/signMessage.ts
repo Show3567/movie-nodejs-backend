@@ -1,19 +1,12 @@
-import crypto from "node:crypto";
-const hash = crypto.createHash("sha256");
-import fs, { writeFileSync } from "fs";
-import { join } from "path";
+import fs from "fs";
 import { encryptWithPublicKey } from "./encrypt";
-import { decryptWithPrivateKey } from "./decrypt";
+import { hashMessage } from "./hashMessage";
 
 const myData = {
 	firstname: "David",
 	lastname: "Dong",
 	ssn: "XXX-XXX-XXXX",
 };
-
-hash.update(JSON.stringify(myData));
-
-const hashedData = hash.digest("hex");
 
 const privateKey = fs.readFileSync(
 	__dirname + "/id_rsa_priv.pem",
@@ -24,7 +17,10 @@ const publicKey = fs.readFileSync(
 	"utf-8"
 );
 
-const signedMessage = encryptWithPublicKey(publicKey, hashedData);
+const signedMessage = encryptWithPublicKey(
+	publicKey,
+	hashMessage(myData, "sha256")
+);
 
 export const packageOfDataToSend = {
 	algorithm: "sha256",
