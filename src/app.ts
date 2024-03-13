@@ -6,8 +6,9 @@ import dotenv from "dotenv";
 
 import "./auth/passport-strategies/local.strategy";
 import "./auth/passport-strategies/jwt.strategy";
-// import "./auth/cryptography/main";
-// import "./auth/cryptography/createKeypair";
+
+// import "./auth/cryptography/main"; // test;
+// import "./auth/cryptography/createKeypair"; // create pem;
 
 import TypeOrmDbConnection from "./core/db_typeorm";
 import Routers from "./core/routes";
