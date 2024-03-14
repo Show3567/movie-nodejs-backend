@@ -22,11 +22,12 @@ const createToken = function (user: User) {
 		username: user.username,
 		email: user.email,
 		tmdb_key: user.tmdb_key,
+		iat: Date.now(),
 	};
 	const accessToken: string = jwt.sign(
 		payload,
 		process.env.JWT_SECRET || "",
-		{ expiresIn: "2h" }
+		{ expiresIn: "1d", algorithm: "RS256" }
 	);
 	return accessToken;
 };

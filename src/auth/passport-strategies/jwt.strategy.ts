@@ -3,24 +3,25 @@ import {
 	ExtractJwt,
 	StrategyOptionsWithoutRequest,
 } from "passport-jwt";
-import passport from "passport";
 import { Repository } from "typeorm";
 import dotenv from "dotenv";
+
 import { User } from "../entities/user.entity";
 import { AppDataSource } from "../../core/db_typeorm";
 
 dotenv.config();
 
 const options: StrategyOptionsWithoutRequest = {
+	// * ~~~~~~~~~~~~~~~~~~ "Authentication": "Bearer <token>"
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 	secretOrKey: process.env.JWT_SECRET || "",
+	algorithms: ["RS256"],
 	// issuer: 'enter issuer here',
 	// audience: 'enter audience here',
-	// algorithms: ['RS256'],
 	// ignoreExpiration: false,
 	// passReqToCallback: false,
 };
-const startegy = new JwtStrategy(options, async (payload, done) => {
+const strategy = new JwtStrategy(options, async (payload, done) => {
 	console.log("payload: ", payload);
 	try {
 		const userRepository: Repository<User> =
@@ -40,4 +41,7 @@ const startegy = new JwtStrategy(options, async (payload, done) => {
 		return done(error, false);
 	}
 });
-passport.use(startegy);
+
+export const useJwtStrategy = (passport: any) => {
+	passport.use(strategy);
+};
