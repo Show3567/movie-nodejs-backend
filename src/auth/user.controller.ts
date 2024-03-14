@@ -26,7 +26,7 @@ const createToken = function (user: User) {
 	const accessToken: string = jwt.sign(
 		payload,
 		process.env.JWT_SECRET || "",
-		{ expiresIn: "1d" }
+		{ expiresIn: "1d", algorithm: "HS256" }
 	);
 	return `Bearer ${accessToken}`;
 };
@@ -69,7 +69,7 @@ const signUp: RequestHandler = async (req, res) => {
 		});
 		const accessToken = userfromdb ? createToken(userfromdb) : "";
 
-		res.status(201).send({ accessToken, role: user.role });
+		res.status(201).json({ accessToken, role: user.role });
 	} catch (err: any) {
 		if (err.code === "11000") {
 			res.status(409).send("Username already exists");
@@ -100,7 +100,11 @@ const getUsers: RequestHandler = async (
 };
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Router;
-// userRouters.get("/users", passport.authenticate("jwt"), getUsers);
+userRouters.get(
+	"/users",
+	passport.authenticate("jwt", { session: false }),
+	getUsers
+);
 
 userRouters.route("/signin").post(
 	passport.authenticate("local", {

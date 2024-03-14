@@ -5,51 +5,51 @@ import connectMongoDBSession from "connect-mongodb-session";
 import dotenv from "dotenv";
 
 import "./auth/passport-strategies/local.strategy";
-import "./auth/passport-strategies/jwt.strategy";
+import "./core/db_typeorm";
+import { useJwtStrategy } from "./auth/passport-strategies/jwt.strategy";
 
 // import "./auth/cryptography/main"; // test;
 // import "./auth/cryptography/createKeypair"; // create pem;
 
-import TypeOrmDbConnection from "./core/db_typeorm";
 import Routers from "./core/routes";
 
-(async () => {
-	const port = process.env.PORT || 4231;
-	const app: Express = express();
-	const envSetup = dotenv.config();
-	const typeOrmConnection = await TypeOrmDbConnection();
-	const MongoDBStore = connectMongoDBSession(session);
+// (async () => {
+const port = process.env.PORT || 4231;
+const app: Express = express();
+const envSetup = dotenv.config();
+const initJwtStrategy = useJwtStrategy(passport);
+const MongoDBStore = connectMongoDBSession(session);
 
-	const store = new MongoDBStore({
-		uri: process.env.MODB_URL || "",
-		collection: "mongoDB_Session",
-	});
-	store.on("error", (error: Error) => {
-		console.error(error);
-	});
+const store = new MongoDBStore({
+	uri: process.env.MODB_URL || "",
+	collection: "mongoDB_Session",
+});
+store.on("error", (error: Error) => {
+	console.error(error);
+});
 
-	app.use(
-		session({
-			store: store,
-			secret: process.env.JWT_SECRET || "",
-			resave: false,
-			saveUninitialized: false,
-			cookie: {
-				secure: true,
-				maxAge: 1000 * 3600 * 24,
-			},
-		})
-	);
+app.use(
+	session({
+		store: store,
+		secret: process.env.JWT_SECRET || "",
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+			secure: true,
+			maxAge: 1000 * 3600 * 24,
+		},
+	})
+);
 
-	app.use(passport.initialize());
-	app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
-	const routers = Routers(app);
+const routers = Routers(app);
 
-	app.listen(port, () => {
-		console.log(`Server is running on port: ${port}`);
-	});
-})().catch((error) => console.log(error));
+app.listen(port, () => {
+	console.log(`Server is running on port: ${port}`);
+});
+// })().catch((error) => console.log(error));
 
 /* 
   & init project, install express;

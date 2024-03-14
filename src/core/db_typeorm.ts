@@ -14,13 +14,11 @@ export const AppDataSource = new DataSource({
 	synchronize: true,
 });
 
-const TypeOrmDbConnection = async () => {
+(async () => {
 	try {
 		await AppDataSource.initialize();
 		console.log(`connection successful!`);
 	} catch (error) {
 		console.error("Error during Data Source initialization", error);
 	}
-};
-
-export default TypeOrmDbConnection;
+})();
