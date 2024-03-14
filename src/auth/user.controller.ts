@@ -7,9 +7,13 @@ import { AppDataSource } from "../core/db_typeorm";
 import { User } from "./entities/user.entity";
 import { UserRole } from "./enum/user-role.enum";
 import { CheckEmailDto } from "./dto/check-email.dto";
-import { genPassword } from "./passport-strategies/passport-util/passport-util";
+import {
+	genPassword,
+	validPassword,
+} from "./passport-strategies/passport-util/passport-util";
 import passport from "passport";
 import { isAuth } from "./auth.middleware";
+import { verifyJwt } from "./jwt/jsonwebtoken";
 
 dotenv.config();
 const userRouters = express.Router();
@@ -32,7 +36,17 @@ const createToken = function (user: User) {
 };
 
 const signIn: RequestHandler = async (req, res) => {
-	const pwd_hash = (await genPassword(req.body.password)).hash;
+	const { email, password } = req.body;
+	const user = await userRepo.findOne({ where: { email } });
+
+	if (user && (await validPassword(password, user.password))) {
+		const accessToken: string = createToken(user);
+		res.status(201).json({ accessToken, role: user.role });
+	} else {
+		res
+			.status(401)
+			.json({ errMsg: "Please check your login credentials" });
+	}
 };
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ API;
@@ -48,15 +62,10 @@ const signUp: RequestHandler = async (req, res) => {
 	if (!!(await userRepo.findOne({ where: { email } })))
 		res.status(409).send("User Already Exist. Please Login");
 
-	// // hash the password;
-	// const salt = await bcrypt.genSalt();
-	// const hashedPassword = await bcrypt.hash(password, salt);
-	const pwd_hash = (await genPassword(password)).hash;
-
 	// create user;
 	const user = userRepo.create({
 		username,
-		password: pwd_hash,
+		password: (await genPassword(password)).hash,
 		email,
 		tmdb_key,
 		role: UserRole[role] || UserRole.USER,
@@ -100,11 +109,9 @@ const getUsers: RequestHandler = async (
 };
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Router;
-userRouters.get(
-	"/users",
-	passport.authenticate("jwt", { session: false }),
-	getUsers
-);
+userRouters
+	.route("/users")
+	.get(passport.authenticate("jwt", { session: false }), getUsers);
 
 userRouters.route("/signin").post(
 	passport.authenticate("local", {

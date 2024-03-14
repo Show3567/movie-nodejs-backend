@@ -6,14 +6,13 @@ import dotenv from "dotenv";
 
 import "./auth/passport-strategies/local.strategy";
 import "./core/db_typeorm";
+
 import { useJwtStrategy } from "./auth/passport-strategies/jwt.strategy";
+import Routers from "./core/routes";
 
 // import "./auth/cryptography/main"; // test;
 // import "./auth/cryptography/createKeypair"; // create pem;
 
-import Routers from "./core/routes";
-
-// (async () => {
 const port = process.env.PORT || 4231;
 const app: Express = express();
 const envSetup = dotenv.config();
@@ -49,7 +48,6 @@ const routers = Routers(app);
 app.listen(port, () => {
 	console.log(`Server is running on port: ${port}`);
 });
-// })().catch((error) => console.log(error));
 
 /* 
   & init project, install express;
