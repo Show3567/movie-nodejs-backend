@@ -1,11 +1,12 @@
 import { Column, Entity, ObjectIdColumn } from "typeorm";
 import { UserRole } from "../enum/user-role.enum";
+import { ObjectId } from "mongoose";
 
 @Entity("user")
 export class User {
 	//   @PrimaryGeneratedColumn() // using uuid;
 	@ObjectIdColumn() // for mongodb;
-	id: string;
+	_id: ObjectId;
 
 	@Column()
 	username: string;

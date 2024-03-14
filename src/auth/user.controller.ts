@@ -22,7 +22,7 @@ const userRepo = AppDataSource.getRepository(User);
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ private function;
 const createToken = function (user: User) {
 	const payload: JwtPayload = {
-		id: user.id.toString(),
+		id: user._id.toString(),
 		username: user.username,
 		email: user.email,
 		tmdb_key: user.tmdb_key,
