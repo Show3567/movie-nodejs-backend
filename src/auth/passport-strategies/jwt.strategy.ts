@@ -7,7 +7,7 @@ import { Repository } from "typeorm";
 import dotenv from "dotenv";
 
 import { User } from "../entities/user.entity";
-import { AppDataSource } from "../../core/db_typeorm";
+import { AppDataSource } from "../../core/typeOrmConfig";
 
 dotenv.config();
 const options: StrategyOptionsWithoutRequest = {

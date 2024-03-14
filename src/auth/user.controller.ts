@@ -3,7 +3,7 @@ import express, { RequestHandler, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 
-import { AppDataSource } from "../core/db_typeorm";
+import { AppDataSource } from "../core/typeOrmConfig";
 import { User } from "./entities/user.entity";
 import { UserRole } from "./enum/user-role.enum";
 import { CheckEmailDto } from "./dto/check-email.dto";

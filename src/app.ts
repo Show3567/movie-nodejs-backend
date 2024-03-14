@@ -1,49 +1,13 @@
 import express, { Express } from "express";
-import passport from "passport";
-import session from "express-session";
-import connectMongoDBSession from "connect-mongodb-session";
-import dotenv from "dotenv";
-
-import "./auth/passport-strategies/local.strategy";
-import "./core/db_typeorm";
-
-import { useJwtStrategy } from "./auth/passport-strategies/jwt.strategy";
-import Routers from "./core/routes";
-
-// import "./auth/cryptography/main"; // test;
-// import "./auth/cryptography/createKeypair"; // create pem;
+import { authConfig } from "./core/authConfig";
+import { routersConfig } from "./core/routes";
+import "./core/typeOrmConfig";
 
 const port = process.env.PORT || 4231;
 const app: Express = express();
-const envSetup = dotenv.config();
-const initJwtStrategy = useJwtStrategy(passport);
-const MongoDBStore = connectMongoDBSession(session);
 
-const store = new MongoDBStore({
-	uri: process.env.MODB_URL || "",
-	collection: "mongoDB_Session",
-});
-store.on("error", (error: Error) => {
-	console.error(error);
-});
-
-app.use(
-	session({
-		store: store,
-		secret: process.env.JWT_SECRET || "",
-		resave: false,
-		saveUninitialized: false,
-		cookie: {
-			secure: true,
-			maxAge: 1000 * 3600 * 24,
-		},
-	})
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-const routers = Routers(app);
+authConfig(app);
+routersConfig(app);
 
 app.listen(port, () => {
 	console.log(`Server is running on port: ${port}`);

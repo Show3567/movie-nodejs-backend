@@ -6,7 +6,7 @@ import {
 import { Repository } from "typeorm";
 
 import { User } from "../entities/user.entity";
-import { AppDataSource } from "../../core/db_typeorm";
+import { AppDataSource } from "../../core/typeOrmConfig";
 import { validPassword } from "./passport-util/passport-util";
 import { DoneFunction } from "../interfaces/jwt-payload.interface";
 
