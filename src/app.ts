@@ -93,4 +93,7 @@ import Routers from "./core/routes";
   & add mongodb session, cz the typeorm store query builder not supported by MongoDB;
   $ npm install connect-mongodb-session express-session
 
+  & add jsonwebtoken;
+  $ npm i jsonwebtoken
+  $ npm i @types/jsonwebtoken --save-dev
 */

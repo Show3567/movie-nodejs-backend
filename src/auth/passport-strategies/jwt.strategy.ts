@@ -14,6 +14,11 @@ dotenv.config();
 const options: StrategyOptionsWithoutRequest = {
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 	secretOrKey: process.env.JWT_SECRET || "",
+	// issuer: 'enter issuer here',
+	// audience: 'enter audience here',
+	// algorithms: ['RS256'],
+	// ignoreExpiration: false,
+	// passReqToCallback: false,
 };
 const startegy = new JwtStrategy(options, async (payload, done) => {
 	console.log("payload: ", payload);
