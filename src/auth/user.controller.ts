@@ -22,14 +22,13 @@ const createToken = function (user: User) {
 		username: user.username,
 		email: user.email,
 		tmdb_key: user.tmdb_key,
-		iat: Date.now(),
 	};
 	const accessToken: string = jwt.sign(
 		payload,
 		process.env.JWT_SECRET || "",
-		{ expiresIn: "1d", algorithm: "RS256" }
+		{ expiresIn: "1d" }
 	);
-	return accessToken;
+	return `Bearer ${accessToken}`;
 };
 
 const signIn: RequestHandler = async (req, res) => {
@@ -70,7 +69,7 @@ const signUp: RequestHandler = async (req, res) => {
 		});
 		const accessToken = userfromdb ? createToken(userfromdb) : "";
 
-		res.status(201).json({ accessToken, role: user.role });
+		res.status(201).send({ accessToken, role: user.role });
 	} catch (err: any) {
 		if (err.code === "11000") {
 			res.status(409).send("Username already exists");

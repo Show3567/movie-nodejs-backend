@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 
 import { User } from "../entities/user.entity";
 import { AppDataSource } from "../../core/db_typeorm";
+import passport from "passport";
 
 dotenv.config();
 
@@ -15,7 +16,7 @@ const options: StrategyOptionsWithoutRequest = {
 	// * ~~~~~~~~~~~~~~~~~~ "Authentication": "Bearer <token>"
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 	secretOrKey: process.env.JWT_SECRET || "",
-	algorithms: ["RS256"],
+	// algorithms: ["RS256"],
 	// issuer: 'enter issuer here',
 	// audience: 'enter audience here',
 	// ignoreExpiration: false,
@@ -42,6 +43,6 @@ const strategy = new JwtStrategy(options, async (payload, done) => {
 	}
 });
 
-export const useJwtStrategy = (passport: any) => {
-	passport.use(strategy);
-};
+// export const useJwtStrategy = (passport: any) => {
+passport.use(strategy);
+// };
