@@ -7,6 +7,12 @@ const port = process.env.PORT || 4231;
 const app: Express = express();
 
 authConfig(app);
+
+// app.use((req, res, next) => {
+// 	console.log(req.session);
+// 	next();
+// });
+
 routersConfig(app);
 
 app.listen(port, () => {

@@ -13,7 +13,6 @@ import {
 } from "./passport-strategies/passport-util/passport-util";
 import passport from "passport";
 import { isAuth } from "./auth.middleware";
-import { verifyJwt } from "./jwt/jsonwebtoken";
 
 dotenv.config();
 const userRouters = express.Router();
@@ -88,6 +87,29 @@ const signUp: RequestHandler = async (req, res) => {
 	}
 };
 
+const updateUser: RequestHandler = async (req, res) => {
+	console.log("user: ", req.body.role, (req.user as User)?.email);
+	const { role } = req.body;
+
+	await userRepo.update(
+		{ email: (req.user as User)?.email },
+		{
+			role: UserRole[role as UserRole],
+		}
+	);
+
+	const userFromDB = await userRepo.findOne({
+		where: { email: (req.user as User)?.email },
+	});
+	if (userFromDB) {
+		console.log(userFromDB);
+		const accessToken: string = createToken(userFromDB);
+		res.status(201).json({ accessToken, role: userFromDB.role });
+	} else {
+		res.status(201).json(req.user);
+	}
+};
+
 const checkEmail: RequestHandler = async function (req, res) {
 	console.log(req.session);
 	const user = await userRepo.findOne({
@@ -113,20 +135,27 @@ userRouters
 	.route("/users")
 	.get(passport.authenticate("jwt", { session: false }), getUsers);
 
-userRouters.route("/signin").post(
-	passport.authenticate("local", {
-		failureRedirect: "/api/v1/auth/login-failed",
-		successRedirect: "/api/v1/auth/login-success",
-	})
-);
-userRouters.route("/login-failed").get((req, res) => {
-	res.send(`<h1>Login Failed!</h1>`);
-});
-userRouters.route("/login-success").get((req, res) => {
-	res.send(`<h1>Login Success!</h1>`);
-});
+// userRouters.route("/signin").post(
+// 	passport.authenticate("local", {
+// 		failureRedirect: "/api/v1/auth/login-failed",
+// 		successRedirect: "/api/v1/auth/login-success",
+// 	})
+// );
+// userRouters.route("/login-failed").get((req, res) => {
+// 	res.send(`<h1>Login Failed!</h1>`);
+// });
+// userRouters.route("/login-success").get((req, res) => {
+// 	res.send(`<h1>Login Success!</h1>`);
+// });
 
+userRouters.route("/signin").post(signIn);
 userRouters.route("/signup").post(signUp);
 userRouters.route("/check-email").post(isAuth as any, checkEmail);
+userRouters
+	.route("/userupdate")
+	.patch(
+		passport.authenticate("jwt", { session: false }),
+		updateUser
+	);
 
 export default userRouters;

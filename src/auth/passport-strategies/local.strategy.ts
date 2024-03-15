@@ -50,9 +50,7 @@ const verifyCallback: VerifyFunction = async (
 passport.use(new LocalStrategy(customFields, verifyCallback));
 
 passport.serializeUser((user: any, done: DoneFunction) => {
-	console.log(user._id);
 	const id = (user as User)._id;
-	console.log(id);
 	done(null, id);
 });
 // cz the deserializeUser not work, and I cannot fix it, it's round 2:45;
