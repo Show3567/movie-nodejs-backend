@@ -13,6 +13,7 @@ import {
 } from "./passport-strategies/passport-util/passport-util";
 import passport from "passport";
 import { isAuth } from "./auth.middleware";
+import { ObjectId } from "typeorm";
 
 dotenv.config();
 const userRouters = express.Router();
@@ -117,6 +118,24 @@ const updateUser: RequestHandler = async (req, res) => {
 	}
 };
 
+// & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ deleteUserById;
+const deleteUserById: RequestHandler = async (req, res) => {
+	const id = req.params.id;
+	const userfromdb = await userRepo.findOne({
+		where: { _id: new ObjectId(id) as any },
+	});
+	if (!userfromdb) {
+		res.status(404).json({
+			message: `User which ID is "${id}" not found!`,
+		});
+	} else if (userfromdb.role !== UserRole.ADMIN)
+		res.status(401).json({
+			message: `You don't have the permission to delete a user.`,
+		});
+	await userRepo.delete({ _id: new ObjectId(id) as any });
+	res.status(204);
+};
+
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ refreshToken;
 const refreshToken: RequestHandler = async (req, res) => {
 	const { email } = req.body;
@@ -186,6 +205,12 @@ userRouters
 	.post(
 		passport.authenticate("jwt", { session: false }),
 		refreshToken
+	);
+userRouters
+	.route("/users/:id")
+	.delete(
+		passport.authenticate("jwt", { session: false }),
+		deleteUserById
 	);
 
 export default userRouters;
