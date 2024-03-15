@@ -13,7 +13,7 @@ dotenv.config();
 const options: StrategyOptionsWithoutRequest = {
 	// * ~~~~~~~~~~~~~~~~~~ "Authentication": "Bearer <token>"
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-	secretOrKey: process.env.JWT_SECRET || "",
+	secretOrKey: process.env.JWT_SECRET || "", // publicKey
 	algorithms: ["HS256"],
 	ignoreExpiration: true,
 	// issuer: 'enter issuer here',

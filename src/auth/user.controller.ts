@@ -30,7 +30,7 @@ const createToken = function (user: User) {
 	};
 	const accessToken: string = jwt.sign(
 		payload,
-		process.env.JWT_SECRET || "",
+		process.env.JWT_SECRET || "", // privateKey
 		{ expiresIn: "1d", algorithm: "HS256" }
 	);
 	return `Bearer ${accessToken}`;
@@ -38,7 +38,7 @@ const createToken = function (user: User) {
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ API;
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ signin;
-const signIn: RequestHandler = async (req, res) => {
+const signInMiddleWare: RequestHandler = async (req, res, next) => {
 	// Validate the DTO
 	const signinDto = plainToInstance(SignInCredentialsDto, req.body);
 	const errors = await validate(signinDto);
@@ -50,8 +50,12 @@ const signIn: RequestHandler = async (req, res) => {
 			return error;
 		});
 		res.status(400).json(filteredErrors);
+		// res.status(400).json(errors);
 	}
+	next();
+};
 
+const signIn: RequestHandler = async (req, res) => {
 	try {
 		const { email, password } = req.body;
 		const user = await userRepo.findOne({ where: { email } });
@@ -156,17 +160,20 @@ const deleteUserById: RequestHandler = async (req, res) => {
 
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ refreshToken;
 const refreshToken: RequestHandler = async (req, res) => {
-	const { email } = req.body;
-	const user = await userRepo.findOne({ where: { email } });
+	console.log("req.user: ", req.user);
 
-	if (user) {
-		const accessToken: string = createToken(user);
-		res.status(201).json({ accessToken, role: user.role });
-	} else {
-		res
-			.status(201)
-			.json({ message: "Please complete your user info" });
-	}
+	// const { email } = req.body;
+	// const user = await userRepo.findOne({ where: { email } });
+
+	// if (user) {
+	// 	const accessToken: string = createToken(user);
+	// 	res.status(201).json({ accessToken, role: user.role });
+	// } else {
+	// 	res
+	// 		.status(201)
+	// 		.json({ message: "Please complete your user info" });
+	// }
+	res.status(201).json({});
 };
 
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ checkEmail;
@@ -206,7 +213,8 @@ userRouters
 // 	res.send(`<h1>Login Success!</h1>`);
 // });
 
-userRouters.route("/signin").post(signIn);
+// userRouters.post("/signup", signIn);
+userRouters.route("/signin").post(signInMiddleWare, signIn);
 userRouters.route("/signup").post(signUp);
 userRouters.route("/check-email").post(checkEmail);
 userRouters

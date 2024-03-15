@@ -3,21 +3,23 @@ import { authConfig } from "./core/authConfig";
 import { routersConfig } from "./core/routes";
 import "./core/typeOrmConfig";
 
-const port = process.env.PORT || 4231;
-const app: Express = express();
+(async () => {
+	const app: Express = express();
 
-authConfig(app);
+	authConfig(app);
 
-// app.use((req, res, next) => {
-// 	console.log(req.session);
-// 	next();
-// });
+	// app.use((req, res, next) => {
+	// 	console.log(req.session);
+	// 	next();
+	// });
 
-routersConfig(app);
+	routersConfig(app);
 
-app.listen(port, () => {
-	console.log(`Server is running on port: ${port}`);
-});
+	const port = process.env.PORT || 4231;
+	app.listen(port, () => {
+		console.log(`Server is running on port: ${port}`);
+	});
+})();
 
 /* 
   & init project, install express;
