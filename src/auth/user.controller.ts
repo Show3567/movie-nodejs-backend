@@ -1,29 +1,23 @@
-import express, {
-	NextFunction,
-	RequestHandler,
-	Response,
-	Request,
-} from "express";
+import express, { RequestHandler } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { ObjectId } from "typeorm";
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
 import dotenv from "dotenv";
 import passport from "passport";
 
-import { AppDataSource } from "../core/typeOrmConfig";
-import { User } from "./entities/user.entity";
-import { UserRole } from "./enum/user-role.enum";
-import { CheckEmailDto } from "./dto/check-email.dto";
+import { dtoCheck } from "./middleware/auth.middleware";
 import {
 	genPassword,
 	validPassword,
 } from "./passport-strategies/passport-util/passport-util";
+import { AppDataSource } from "../core/typeOrmConfig";
+import { User } from "./entities/user.entity";
+import { UserRole } from "./enum/user-role.enum";
+
+import { CheckEmailDto } from "./dto/check-email.dto";
 import { SignInCredentialsDto } from "./dto/signin.dto";
 import { SignUpCredentialsDto } from "./dto/signup.dto";
 import { RefreshTokenDto } from "./dto/refresh-token.dto";
 import { UpdateCredentialDto } from "./dto/update-user.dto";
-import { dtoCheck } from "./middleware/auth.middleware";
 
 dotenv.config();
 const userRouters = express.Router();
