@@ -4,16 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var dotenv_1 = __importDefault(require("dotenv"));
-var db_typeorm_1 = __importDefault(require("./core/db_typeorm"));
-var routes_1 = __importDefault(require("./core/routes"));
-// const app = require('express')();
-// const fs = require('node:fs');
-var app = (0, express_1.default)();
-dotenv_1.default.config();
-(0, db_typeorm_1.default)();
-(0, routes_1.default)(app);
+var authConfig_1 = require("./core/authConfig");
+var routes_1 = require("./core/routes");
+require("./core/typeOrmConfig");
 var port = process.env.PORT || 4231;
+var app = (0, express_1.default)();
+(0, authConfig_1.authConfig)(app);
+// app.use((req, res, next) => {
+// 	console.log(req.session);
+// 	next();
+// });
+(0, routes_1.routersConfig)(app);
 app.listen(port, function () {
     console.log("Server is running on port: ".concat(port));
 });
@@ -44,4 +45,22 @@ app.listen(port, function () {
 
   & send http request to other server;
   $ npm install axios
+
+  & add passport;
+  $ npm install passport passport-jwt jsonwebtoken
+  $ npm install @types/passport @types/passport-jwt @types/jsonwebtoken --save-dev
+
+  & add class-validator;
+  $ npm install class-validator class-transformer reflect-metadata
+
+  & add express-session;
+  $ npm install express-session
+  $ npm install @types/express-session @types/express --save-dev
+
+  & add mongodb session, cz the typeorm store query builder not supported by MongoDB;
+  $ npm install connect-mongodb-session express-session
+
+  & add jsonwebtoken;
+  $ npm i jsonwebtoken
+  $ npm i @types/jsonwebtoken --save-dev
 */

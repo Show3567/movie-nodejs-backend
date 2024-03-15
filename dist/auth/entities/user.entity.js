@@ -15,11 +15,17 @@ var user_role_enum_1 = require("../enum/user-role.enum");
 var User = /** @class */ (function () {
     function User() {
     }
+    // Add method to validate password
+    User.prototype.validatePassword = function (password) {
+        // Implement your password validation logic here
+        // For simplicity, let's assume passwords are stored in plain text (which is not recommended in production)
+        return this.password === password;
+    };
     __decorate([
         (0, typeorm_1.ObjectIdColumn)() // for mongodb;
         ,
-        __metadata("design:type", String)
-    ], User.prototype, "id", void 0);
+        __metadata("design:type", Object)
+    ], User.prototype, "_id", void 0);
     __decorate([
         (0, typeorm_1.Column)(),
         __metadata("design:type", String)
@@ -45,7 +51,7 @@ var User = /** @class */ (function () {
         __metadata("design:type", String)
     ], User.prototype, "tmdb_key", void 0);
     User = __decorate([
-        (0, typeorm_1.Entity)()
+        (0, typeorm_1.Entity)("user")
     ], User);
     return User;
 }());
