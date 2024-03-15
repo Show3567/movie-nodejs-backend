@@ -52,7 +52,7 @@ app.listen(port, () => {
   $ npm install @types/passport @types/passport-jwt @types/jsonwebtoken --save-dev
 
   & add class-validator;
-  $ npm install class-validator reflect-metadata
+  $ npm install class-validator class-transformer reflect-metadata
 
   & add express-session;
   $ npm install express-session

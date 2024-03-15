@@ -1,7 +1,10 @@
-import express, { RequestHandler, Request, Response } from "express";
-
+import express, { RequestHandler } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { ObjectId } from "typeorm";
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
 import dotenv from "dotenv";
+import passport from "passport";
 
 import { AppDataSource } from "../core/typeOrmConfig";
 import { User } from "./entities/user.entity";
@@ -11,9 +14,7 @@ import {
 	genPassword,
 	validPassword,
 } from "./passport-strategies/passport-util/passport-util";
-import passport from "passport";
-import { isAuth } from "./auth.middleware";
-import { ObjectId } from "typeorm";
+import { SignInCredentialsDto } from "./dto/signin.dto";
 
 dotenv.config();
 const userRouters = express.Router();
@@ -38,16 +39,33 @@ const createToken = function (user: User) {
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ API;
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ signin;
 const signIn: RequestHandler = async (req, res) => {
-	const { email, password } = req.body;
-	const user = await userRepo.findOne({ where: { email } });
+	// Validate the DTO
+	const signinDto = plainToInstance(SignInCredentialsDto, req.body);
+	const errors = await validate(signinDto);
+	if (errors.length > 0) {
+		const filteredErrors = errors.map((error: any) => {
+			if (error.target && error.target.password) {
+				delete error.target.password;
+			}
+			return error;
+		});
+		res.status(400).json(filteredErrors);
+	}
 
-	if (user && (await validPassword(password, user.password))) {
-		const accessToken: string = createToken(user);
-		res.status(201).json({ accessToken, role: user.role });
-	} else {
-		res
-			.status(401)
-			.json({ errMsg: "Please check your login credentials" });
+	try {
+		const { email, password } = req.body;
+		const user = await userRepo.findOne({ where: { email } });
+
+		if (user && (await validPassword(password, user.password))) {
+			const accessToken: string = createToken(user);
+			res.status(201).json({ accessToken, role: user.role });
+		} else {
+			res
+				.status(401)
+				.json({ errMsg: "Please check your login credentials" });
+		}
+	} catch (error) {
+		res.status(500).json({ message: "Internal Server Error" });
 	}
 };
 
@@ -164,10 +182,7 @@ const checkEmail: RequestHandler = async function (req, res) {
 	}
 };
 
-const getUsers: RequestHandler = async (
-	req: Request,
-	res: Response
-) => {
+const getUsers: RequestHandler = async (req, res) => {
 	const users = await userRepo.find();
 	res.status(200).json(users);
 };
@@ -193,7 +208,7 @@ userRouters
 
 userRouters.route("/signin").post(signIn);
 userRouters.route("/signup").post(signUp);
-userRouters.route("/check-email").post(isAuth as any, checkEmail);
+userRouters.route("/check-email").post(checkEmail);
 userRouters
 	.route("/userupdate")
 	.patch(
