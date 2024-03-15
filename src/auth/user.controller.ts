@@ -34,6 +34,8 @@ const createToken = function (user: User) {
 	return `Bearer ${accessToken}`;
 };
 
+// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ API;
+// & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ signin;
 const signIn: RequestHandler = async (req, res) => {
 	const { email, password } = req.body;
 	const user = await userRepo.findOne({ where: { email } });
@@ -48,7 +50,7 @@ const signIn: RequestHandler = async (req, res) => {
 	}
 };
 
-// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ API;
+// & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ signup;
 const signUp: RequestHandler = async (req, res) => {
 	const { username, password, email, tmdb_key, role }: User =
 		req.body;
@@ -87,29 +89,50 @@ const signUp: RequestHandler = async (req, res) => {
 	}
 };
 
+// & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ updateUser;
 const updateUser: RequestHandler = async (req, res) => {
 	console.log("user: ", req.body.role, (req.user as User)?.email);
 	const { role } = req.body;
 
-	await userRepo.update(
-		{ email: (req.user as User)?.email },
-		{
-			role: UserRole[role as UserRole],
-		}
-	);
+	try {
+		await userRepo.update(
+			{ email: (req.user as User)?.email },
+			{
+				role: UserRole[role as UserRole],
+			}
+		);
 
-	const userFromDB = await userRepo.findOne({
-		where: { email: (req.user as User)?.email },
-	});
-	if (userFromDB) {
-		console.log(userFromDB);
-		const accessToken: string = createToken(userFromDB);
-		res.status(201).json({ accessToken, role: userFromDB.role });
-	} else {
-		res.status(201).json(req.user);
+		const userFromDB = await userRepo.findOne({
+			where: { email: (req.user as User)?.email },
+		});
+		if (userFromDB) {
+			console.log(userFromDB);
+			const accessToken: string = createToken(userFromDB);
+			res.status(205).json({ accessToken, role: userFromDB.role });
+		} else {
+			res.status(201).json(req.user);
+		}
+	} catch (error) {
+		res.status(500).json({ err: JSON.stringify(error) });
 	}
 };
 
+// & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ refreshToken;
+const refreshToken: RequestHandler = async (req, res) => {
+	const { email } = req.body;
+	const user = await userRepo.findOne({ where: { email } });
+
+	if (user) {
+		const accessToken: string = createToken(user);
+		res.status(201).json({ accessToken, role: user.role });
+	} else {
+		res
+			.status(201)
+			.json({ message: "Please complete your user info" });
+	}
+};
+
+// & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ checkEmail;
 const checkEmail: RequestHandler = async function (req, res) {
 	console.log(req.session);
 	const user = await userRepo.findOne({
@@ -135,6 +158,7 @@ userRouters
 	.route("/users")
 	.get(passport.authenticate("jwt", { session: false }), getUsers);
 
+// & ~~~~ passport local strategy;
 // userRouters.route("/signin").post(
 // 	passport.authenticate("local", {
 // 		failureRedirect: "/api/v1/auth/login-failed",
@@ -156,6 +180,12 @@ userRouters
 	.patch(
 		passport.authenticate("jwt", { session: false }),
 		updateUser
+	);
+userRouters
+	.route("/refresh-token")
+	.post(
+		passport.authenticate("jwt", { session: false }),
+		refreshToken
 	);
 
 export default userRouters;

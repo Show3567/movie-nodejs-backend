@@ -15,9 +15,9 @@ const options: StrategyOptionsWithoutRequest = {
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 	secretOrKey: process.env.JWT_SECRET || "",
 	algorithms: ["HS256"],
+	ignoreExpiration: true,
 	// issuer: 'enter issuer here',
 	// audience: 'enter audience here',
-	// ignoreExpiration: false,
 	// passReqToCallback: false,
 };
 const strategy = new JwtStrategy(options, async (payload, done) => {
