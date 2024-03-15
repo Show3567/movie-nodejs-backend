@@ -1,4 +1,9 @@
-import express, { RequestHandler } from "express";
+import express, {
+	NextFunction,
+	RequestHandler,
+	Response,
+	Request,
+} from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { ObjectId } from "typeorm";
 import { plainToInstance } from "class-transformer";
@@ -15,6 +20,10 @@ import {
 	validPassword,
 } from "./passport-strategies/passport-util/passport-util";
 import { SignInCredentialsDto } from "./dto/signin.dto";
+import { SignUpCredentialsDto } from "./dto/signup.dto";
+import { RefreshTokenDto } from "./dto/refresh-token.dto";
+import { UpdateCredentialDto } from "./dto/update-user.dto";
+import { dtoCheck } from "./middleware/auth.middleware";
 
 dotenv.config();
 const userRouters = express.Router();
@@ -38,23 +47,6 @@ const createToken = function (user: User) {
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ API;
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ signin;
-const signInMiddleWare: RequestHandler = async (req, res, next) => {
-	// Validate the DTO
-	const signinDto = plainToInstance(SignInCredentialsDto, req.body);
-	const errors = await validate(signinDto);
-	if (errors.length > 0) {
-		const filteredErrors = errors.map((error: any) => {
-			if (error.target && error.target.password) {
-				delete error.target.password;
-			}
-			return error;
-		});
-		res.status(400).json(filteredErrors);
-		// res.status(400).json(errors);
-	}
-	next();
-};
-
 const signIn: RequestHandler = async (req, res) => {
 	try {
 		const { email, password } = req.body;
@@ -77,10 +69,6 @@ const signIn: RequestHandler = async (req, res) => {
 const signUp: RequestHandler = async (req, res) => {
 	const { username, password, email, tmdb_key, role }: User =
 		req.body;
-
-	// 400: 'Bad Request';
-	if (!(email && password))
-		res.status(400).send("All input are required!");
 
 	// 409: 'Conflict';
 	if (!!(await userRepo.findOne({ where: { email } })))
@@ -214,18 +202,34 @@ userRouters
 // });
 
 // userRouters.post("/signup", signIn);
-userRouters.route("/signin").post(signInMiddleWare, signIn);
-userRouters.route("/signup").post(signUp);
-userRouters.route("/check-email").post(checkEmail);
+userRouters.route("/signin").post(
+	dtoCheck(SignInCredentialsDto, (errors) => {
+		return errors.map((error: any) => {
+			if (error.target && error.target.password) {
+				delete error.target.password;
+			}
+			return error;
+		});
+	}),
+	signIn
+);
+userRouters
+	.route("/signup")
+	.post(dtoCheck(SignUpCredentialsDto), signUp);
+userRouters
+	.route("/check-email")
+	.post(dtoCheck(CheckEmailDto), checkEmail);
 userRouters
 	.route("/userupdate")
 	.patch(
+		dtoCheck(UpdateCredentialDto),
 		passport.authenticate("jwt", { session: false }),
 		updateUser
 	);
 userRouters
 	.route("/refresh-token")
 	.post(
+		dtoCheck(RefreshTokenDto),
 		passport.authenticate("jwt", { session: false }),
 		refreshToken
 	);

@@ -1,5 +1,6 @@
+import { plainToInstance } from "class-transformer";
+import { ValidationError, validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
-import { PassportStatic } from "passport";
 
 // Extend the Express Request interface to include Passport.js properties
 interface PassportRequest extends Request {
@@ -20,6 +21,23 @@ export const isAuth = (
 	}
 };
 
-// export const isAdmin = (req, res, next) => {
-
-// }
+export const dtoCheck = (
+	DtoClass: any,
+	callback:
+		| ((err: ValidationError[]) => ValidationError[])
+		| null = null
+) => {
+	return async (req: Request, res: Response, next: NextFunction) => {
+		const dto = plainToInstance(DtoClass, req.body);
+		const errors = await validate(dto);
+		if (errors.length > 0) {
+			if (callback) {
+				const err = callback(errors);
+				res.status(400).json(err);
+			} else {
+				res.status(400).json(errors);
+			}
+		}
+		next();
+	};
+};
