@@ -7,6 +7,6 @@ export const routersConfig = (app: Express) => {
 	app.use(express.json());
 	app.use("/api/v1/auth", userRouters);
 	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ movie router;
-	app.use("/api/v1/discover", movieRouter);
+	app.use("/api/v1/", movieRouter);
 	app.use("/api/v1/universities", universityRouter);
 };
