@@ -9,7 +9,7 @@ import {
 	signIn,
 	signUp,
 	updateUser,
-} from "./user.services";
+} from "./user.service";
 
 import { dtoCheck } from "./middleware/auth.middleware";
 import { CheckEmailDto } from "./dto/check-email.dto";
