@@ -42,5 +42,5 @@ const strategy = new JwtStrategy(options, async (payload, done) => {
 });
 
 export const useJwtStrategy = (passport: any) => {
-	passport.use(strategy);
+	passport.use("jwt", strategy);
 };
