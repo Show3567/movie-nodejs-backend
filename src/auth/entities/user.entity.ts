@@ -24,9 +24,6 @@ export class User {
 	})
 	role: UserRole;
 
-	@Column()
-	tmdb_key: string;
-
 	// Add method to validate password
 	validatePassword(password: string): boolean {
 		// Implement your password validation logic here

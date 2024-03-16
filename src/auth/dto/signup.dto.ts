@@ -36,11 +36,6 @@ export class SignUpCredentialsDto {
 	@IsOptional()
 	@IsEnum(UserRole)
 	readonly role!: string;
-
-	// @ApiProperty()
-	@IsString()
-	@MinLength(15)
-	tmdb_key!: string;
 }
 
 /**

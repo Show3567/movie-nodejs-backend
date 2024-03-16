@@ -21,7 +21,4 @@ export class RefreshTokenDto {
 	@IsOptional()
 	@IsEnum(UserRole)
 	readonly role!: string;
-
-	@IsString()
-	tmdb_key!: string;
 }

@@ -20,7 +20,6 @@ const createToken = function (user: User) {
 		id: user._id.toString(),
 		username: user.username,
 		email: user.email,
-		tmdb_key: user.tmdb_key,
 	};
 	const accessToken: string = jwt.sign(
 		payload,
@@ -48,8 +47,7 @@ export const signIn: RequestHandler = async (req, res) => {
 
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ signup;
 export const signUp: RequestHandler = async (req, res) => {
-	const { username, password, email, tmdb_key, role }: User =
-		req.body;
+	const { username, password, email, role }: User = req.body;
 
 	// 409: 'Conflict';
 	if (!!(await userRepo.findOne({ where: { email } })))
@@ -60,7 +58,6 @@ export const signUp: RequestHandler = async (req, res) => {
 		username,
 		password: (await genPassword(password)).hash,
 		email,
-		tmdb_key,
 		role: UserRole[role] || UserRole.USER,
 	});
 
