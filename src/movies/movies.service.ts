@@ -5,10 +5,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const tmdbBaseUrl = process.env.TMDB_BASE_URL;
-const baseMovieImage = process.env.TMDB_BASE_MOVIE_IMG;
-const discoverMoviePath = "discover/movie";
-const searchMoviePath = "search/movie";
-const discoverTvPath = "discover/tv?";
+// const baseMovieImage = process.env.TMDB_BASE_MOVIE_IMG;
+// const discoverTvPath = "discover/tv?";
 const moviePath = "movie";
 const tmdb_key = process.env.TMDB_KEY;
 
