@@ -12,7 +12,7 @@ import "./core/typeOrmConfig";
 	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ auth config;
 	authConfig(app);
 
-	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ router handler;
+	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Router and MiddleWare handler;
 	routersConfig(app);
 
 	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ global error handler;
@@ -70,4 +70,7 @@ import "./core/typeOrmConfig";
   & add jsonwebtoken;
   $ npm i jsonwebtoken
   $ npm i @types/jsonwebtoken --save-dev
+
+  & handle cros issue;
+  $ npm install cors @types/cors
 */

@@ -16,10 +16,12 @@ export class UpdateCredentialDto {
 	@IsString()
 	@MinLength(4)
 	@MaxLength(10)
+	@IsOptional()
 	readonly username?: string;
 
 	// @ApiProperty()
 	@IsString()
+	@IsOptional()
 	// @MinLength(4)
 	// @MaxLength(10)
 	// @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
@@ -30,10 +32,12 @@ export class UpdateCredentialDto {
 	// @ApiProperty()
 	@IsString()
 	@IsEmail()
+	@IsOptional()
 	readonly email?: string;
 
 	// @ApiProperty()
 	@IsOptional()
 	@IsEnum(UserRole)
+	@IsOptional()
 	readonly role?: string;
 }
