@@ -42,20 +42,16 @@ const createToken = function (user: User) {
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ API;
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ signin;
 const signIn: RequestHandler = async (req, res) => {
-	try {
-		const { email, password } = req.body;
-		const user = await userRepo.findOne({ where: { email } });
+	const { email, password } = req.body;
+	const user = await userRepo.findOne({ where: { email } });
 
-		if (user && (await validPassword(password, user.password))) {
-			const accessToken: string = createToken(user);
-			res.status(201).json({ accessToken, role: user.role });
-		} else {
-			res
-				.status(401)
-				.json({ errMsg: "Please check your login credentials" });
-		}
-	} catch (error) {
-		res.status(500).json({ message: "Internal Server Error" });
+	if (user && (await validPassword(password, user.password))) {
+		const accessToken: string = createToken(user);
+		res.status(201).json({ accessToken, role: user.role });
+	} else {
+		res
+			.status(401)
+			.json({ errMsg: "Please check your login credentials" });
 	}
 };
 
@@ -77,21 +73,13 @@ const signUp: RequestHandler = async (req, res) => {
 		role: UserRole[role] || UserRole.USER,
 	});
 
-	try {
-		await userRepo.save(user);
-		const userfromdb = await userRepo.findOne({
-			where: { email },
-		});
-		const accessToken = userfromdb ? createToken(userfromdb) : "";
+	await userRepo.save(user);
+	const userfromdb = await userRepo.findOne({
+		where: { email },
+	});
+	const accessToken = userfromdb ? createToken(userfromdb) : "";
 
-		res.status(201).json({ accessToken, role: user.role });
-	} catch (err: any) {
-		if (err.code === "11000") {
-			res.status(409).send("Username already exists");
-		} else {
-			res.status(500);
-		}
-	}
+	res.status(201).json({ accessToken, role: user.role });
 };
 
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ updateUser;
@@ -99,26 +87,22 @@ const updateUser: RequestHandler = async (req, res) => {
 	console.log("user: ", req.body.role, (req.user as User)?.email);
 	const { role } = req.body;
 
-	try {
-		await userRepo.update(
-			{ email: (req.user as User)?.email },
-			{
-				role: UserRole[role as UserRole],
-			}
-		);
-
-		const userFromDB = await userRepo.findOne({
-			where: { email: (req.user as User)?.email },
-		});
-		if (userFromDB) {
-			console.log(userFromDB);
-			const accessToken: string = createToken(userFromDB);
-			res.status(205).json({ accessToken, role: userFromDB.role });
-		} else {
-			res.status(201).json(req.user);
+	await userRepo.update(
+		{ email: (req.user as User)?.email },
+		{
+			role: UserRole[role as UserRole],
 		}
-	} catch (error) {
-		res.status(500).json({ err: JSON.stringify(error) });
+	);
+
+	const userFromDB = await userRepo.findOne({
+		where: { email: (req.user as User)?.email },
+	});
+	if (userFromDB) {
+		console.log(userFromDB);
+		const accessToken: string = createToken(userFromDB);
+		res.status(205).json({ accessToken, role: userFromDB.role });
+	} else {
+		res.status(201).json(req.user);
 	}
 };
 
