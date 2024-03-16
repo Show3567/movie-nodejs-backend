@@ -28,6 +28,12 @@ const movieGetReqConvert = (PATH: string): RequestHandler => {
 	};
 };
 
+const getMovieById: RequestHandler = async (req, res) => {
+	const url = `${tmdbBaseUrl}/${moviePath}/${req.params.id}?api_key=${tmdb_key}`;
+	const result = await axios.get(url).then((ele) => ele.data);
+	res.status(200).json(result);
+};
+
 movieRouter
 	.route("/discover/movie")
 	.get(
@@ -39,6 +45,12 @@ movieRouter
 	.get(
 		passport.authenticate("jwt", { session: false }),
 		movieGetReqConvert(searchMoviePath)
+	);
+movieRouter
+	.route("/movie/:id")
+	.get(
+		passport.authenticate("jwt", { session: false }),
+		getMovieById
 	);
 
 export default movieRouter;
