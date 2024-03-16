@@ -1,20 +1,24 @@
 import express, { Express } from "express";
 import { authConfig } from "./core/authConfig";
 import { routersConfig } from "./core/routes";
+import { errorHandler } from "./errors/errorHandler";
+
+// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ database connection;
 import "./core/typeOrmConfig";
 
 (async () => {
 	const app: Express = express();
 
+	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ auth config;
 	authConfig(app);
 
-	// app.use((req, res, next) => {
-	// 	console.log(req.session);
-	// 	next();
-	// });
-
+	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ router handler;
 	routersConfig(app);
 
+	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ global error handler;
+	app.use(errorHandler);
+
+	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ server;
 	const port = process.env.PORT || 4231;
 	app.listen(port, () => {
 		console.log(`Server is running on port: ${port}`);
