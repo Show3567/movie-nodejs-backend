@@ -75,7 +75,6 @@ export const signUp: RequestHandler = async (req, res) => {
 
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ updateUser;
 export const updateUser: RequestHandler = async (req, res) => {
-	console.log("user: ", req.body.role, (req.user as User)?.email);
 	const { role } = req.body;
 
 	await userRepo.update(
@@ -89,7 +88,6 @@ export const updateUser: RequestHandler = async (req, res) => {
 		where: { email: (req.user as User)?.email },
 	});
 	if (userFromDB) {
-		console.log(userFromDB);
 		const accessToken: string = createToken(userFromDB);
 		res.status(205).json({ accessToken, role: userFromDB.role });
 	} else {
@@ -133,7 +131,6 @@ export const refreshToken: RequestHandler = async (req, res) => {
 
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ checkEmail;
 export const checkEmail: RequestHandler = async function (req, res) {
-	console.log(req.session);
 	const user = await userRepo.findOne({
 		where: { email: (req.body as CheckEmailDto).email },
 	});
