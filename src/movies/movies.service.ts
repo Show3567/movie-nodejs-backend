@@ -31,3 +31,18 @@ export const getMovieById: RequestHandler = async (req, res) => {
 	const result = await axios.get(url).then((ele) => ele.data);
 	res.status(200).json(result);
 };
+
+export const getDetails = (PATH: string): RequestHandler => {
+	return async (req, res) => {
+		const id = req.params.id;
+
+		if (id) {
+			const url = `${tmdbBaseUrl}/${moviePath}/${id}/${PATH}?api_key=${tmdb_key}`;
+			const result = await axios.get(url).then((ele) => ele.data);
+			res.status(200).json(result);
+		} else {
+			// expected err;
+			res.status(404).json({ message: "Cannot found this id" });
+		}
+	};
+};

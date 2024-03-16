@@ -1,6 +1,10 @@
 import express from "express";
 import passport from "passport";
-import { getMovieById, movieGetReqConvert } from "./movies.service";
+import {
+	getDetails,
+	getMovieById,
+	movieGetReqConvert,
+} from "./movies.service";
 
 const movieRouter = express.Router();
 
@@ -21,6 +25,24 @@ movieRouter
 	.get(
 		passport.authenticate("jwt", { session: false }),
 		getMovieById
+	);
+movieRouter
+	.route("/movie/:id/credits")
+	.get(
+		passport.authenticate("jwt", { session: false }),
+		getDetails("credits")
+	);
+movieRouter
+	.route("/movie/:id/images")
+	.get(
+		passport.authenticate("jwt", { session: false }),
+		getDetails("images")
+	);
+movieRouter
+	.route("/movie/:id/videos")
+	.get(
+		passport.authenticate("jwt", { session: false }),
+		getDetails("videos")
 	);
 
 export default movieRouter;
