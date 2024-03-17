@@ -15,7 +15,6 @@ import { dtoCheck } from "./middleware/auth.middleware";
 import { CheckEmailDto } from "./dto/check-email.dto";
 import { SignInCredentialsDto } from "./dto/signin.dto";
 import { SignUpCredentialsDto } from "./dto/signup.dto";
-import { RefreshTokenDto } from "./dto/refresh-token.dto";
 import { UpdateCredentialDto } from "./dto/update-user.dto";
 
 const userRouters = express.Router();
@@ -63,13 +62,11 @@ userRouters
 		passport.authenticate("jwt", { session: false }),
 		updateUser
 	);
-userRouters
-	.route("/refresh-token")
-	.post(
-		dtoCheck(RefreshTokenDto),
-		passport.authenticate("jwt_ign_exptime", { session: false }),
-		refreshToken
-	);
+userRouters.route("/refresh-token").get(
+	// dtoCheck(RefreshTokenDto),
+	passport.authenticate("jwt_ign_exptime", { session: false }),
+	refreshToken
+);
 userRouters
 	.route("/users/:id")
 	.delete(

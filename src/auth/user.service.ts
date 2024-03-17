@@ -112,18 +112,19 @@ export const deleteUserById: RequestHandler = async (req, res) => {
 
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ refreshToken;
 export const refreshToken: RequestHandler = async (req, res) => {
-	const { email } = req.body;
-	const user = await userRepo.findOne({ where: { email } });
-
-	if (user) {
-		const accessToken: string = createToken(user);
-		res.status(201).json({ accessToken, role: user.role });
-	} else {
-		res
-			.status(201)
-			.json({ message: "Please complete your user info" });
+	if (req.user && (req.user as User).email) {
+		const user = await userRepo.findOne({
+			where: { email: (req.user as User).email },
+		});
+		if (user) {
+			const accessToken: string = createToken(user);
+			res.status(201).json({ accessToken, role: user.role });
+		} else {
+			res
+				.status(201)
+				.json({ message: "Please complete your user info" });
+		}
 	}
-	res.status(201).json({});
 };
 
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ checkEmail;
