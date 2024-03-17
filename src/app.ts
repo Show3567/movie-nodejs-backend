@@ -5,10 +5,11 @@ import { errorHandler } from "./errors/errorHandler";
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ database connection;
 import "./core/typeOrmConfig";
-import "./core/evn.config";
 
-console.log(process.env.NODE_ENV);
-console.log(process.env.TEST);
+// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ env config;
+import "./core/evn.config";
+// console.log(process.env.NODE_ENV);
+// console.log(process.env.TEST);
 
 (async () => {
 	const app: Express = express();
@@ -80,4 +81,8 @@ console.log(process.env.TEST);
 
   & set env;
   $ npm install --save-dev cross-env
+
+  & logger;
+  $ npm install winston
+  $ npm install @types/winston --save-dev
 */

@@ -28,7 +28,7 @@ const options_expire: StrategyOptionsWithoutRequest = {
 
 const strategyCreator = (options: StrategyOptionsWithoutRequest) => {
 	return new JwtStrategy(options, async (payload, done) => {
-		console.log("payload: ", payload);
+		// console.log("payload: ", payload);
 		try {
 			const userRepository: Repository<User> =
 				AppDataSource.getRepository(User);
@@ -43,7 +43,6 @@ const strategyCreator = (options: StrategyOptionsWithoutRequest) => {
 				});
 			}
 		} catch (error) {
-			console.log(error);
 			return done(error, false);
 		}
 	});

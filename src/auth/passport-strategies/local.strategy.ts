@@ -42,7 +42,6 @@ const verifyCallback: VerifyFunction = async (
 			return done(null, false);
 		}
 	} catch (error) {
-		console.log(error);
 		return done(error, false);
 	}
 };
@@ -56,11 +55,9 @@ passport.serializeUser((user: any, done: DoneFunction) => {
 // cz the deserializeUser not work, and I cannot fix it, it's round 2:45;
 passport.deserializeUser(async (id: string, done: DoneFunction) => {
 	try {
-		console.log(id);
 		const user = await userRepository.findOne({
 			where: { _id: new ObjectId(id) } as any,
 		});
-		console.log(user);
 		if (user) {
 			done(null, user);
 		} else {
