@@ -4,12 +4,11 @@ import {
 	StrategyOptionsWithoutRequest,
 } from "passport-jwt";
 import { Repository } from "typeorm";
-import dotenv from "dotenv";
+import "dotenv/config";
 
 import { User } from "../entities/user.entity";
 import { AppDataSource } from "../../core/typeOrmConfig";
 
-dotenv.config();
 const options_ignaoreExpire: StrategyOptionsWithoutRequest = {
 	// * ~~~~~~~~~~~~~~~~~~ "Authentication": "Bearer <token>"
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

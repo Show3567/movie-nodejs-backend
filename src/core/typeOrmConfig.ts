@@ -1,10 +1,9 @@
 import "reflect-metadata";
-import dotenv from "dotenv";
+import "dotenv/config";
 import { DataSource } from "typeorm";
 import { User } from "../auth/entities/user.entity";
 import { SessionEntity } from "./entities/SessionEntity";
 
-dotenv.config();
 export const AppDataSource = new DataSource({
 	type: "mongodb",
 	url: process.env.MODB_URL,

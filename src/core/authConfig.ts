@@ -1,7 +1,7 @@
 import { Express } from "express";
 import passport from "passport";
 import session from "express-session";
-import dotenv from "dotenv";
+import "dotenv/config";
 import connectMongoDBSession from "connect-mongodb-session";
 
 // import "../auth/cryptography/main"; // test;
@@ -11,8 +11,6 @@ import "../auth/passport-strategies/local.strategy";
 import { useJwtStrategy } from "../auth/passport-strategies/jwt.strategy";
 
 export const authConfig = (app: Express) => {
-	// config env;
-	dotenv.config();
 	// load jwt strategy;
 	useJwtStrategy(passport);
 	// connect db;

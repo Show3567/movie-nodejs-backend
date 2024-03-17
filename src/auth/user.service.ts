@@ -8,10 +8,9 @@ import {
 import { AppDataSource } from "../core/typeOrmConfig";
 import { User } from "./entities/user.entity";
 import { UserRole } from "./enum/user-role.enum";
-import dotenv from "dotenv";
+import "dotenv/config";
 import { CheckEmailDto } from "./dto/check-email.dto";
 
-dotenv.config();
 const userRepo = AppDataSource.getRepository(User);
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ private function;
