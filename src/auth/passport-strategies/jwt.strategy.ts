@@ -4,7 +4,7 @@ import {
 	StrategyOptionsWithoutRequest,
 } from "passport-jwt";
 import { Repository } from "typeorm";
-import "dotenv/config";
+import "../../core/evn.config";
 
 import { User } from "../entities/user.entity";
 import { AppDataSource } from "../../core/typeOrmConfig";

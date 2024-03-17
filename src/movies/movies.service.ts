@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import axios from "axios";
-import "dotenv/config";
+import "../core/evn.config";
 
 const tmdbBaseUrl = process.env.TMDB_BASE_URL;
 // const baseMovieImage = process.env.TMDB_BASE_MOVIE_IMG;

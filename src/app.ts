@@ -5,6 +5,10 @@ import { errorHandler } from "./errors/errorHandler";
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ database connection;
 import "./core/typeOrmConfig";
+import "./core/evn.config";
+
+console.log(process.env.NODE_ENV);
+console.log(process.env.TEST);
 
 (async () => {
 	const app: Express = express();
@@ -73,4 +77,7 @@ import "./core/typeOrmConfig";
 
   & handle cros issue;
   $ npm install cors @types/cors
+
+  & set env;
+  $ npm install --save-dev cross-env
 */

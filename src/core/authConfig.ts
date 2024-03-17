@@ -1,7 +1,7 @@
 import { Express } from "express";
 import passport from "passport";
 import session from "express-session";
-import "dotenv/config";
+import "../core/evn.config";
 import connectMongoDBSession from "connect-mongodb-session";
 
 // import "../auth/cryptography/main"; // test;
