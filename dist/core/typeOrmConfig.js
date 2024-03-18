@@ -41,7 +41,7 @@ require("reflect-metadata");
 var typeorm_1 = require("typeorm");
 var user_entity_1 = require("../auth/entities/user.entity");
 var SessionEntity_1 = require("./entities/SessionEntity");
-require("./evn.config");
+require("./evnConfig");
 exports.AppDataSource = new typeorm_1.DataSource({
     type: "mongodb",
     url: process.env.MODB_URL,

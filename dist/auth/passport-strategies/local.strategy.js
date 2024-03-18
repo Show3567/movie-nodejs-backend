@@ -76,7 +76,6 @@ var verifyCallback = function (email, password, done) { return __awaiter(void 0,
                 return [3 /*break*/, 4];
             case 3:
                 error_1 = _a.sent();
-                console.log(error_1);
                 return [2 /*return*/, done(error_1, false)];
             case 4: return [2 /*return*/];
         }
@@ -94,13 +93,11 @@ passport_1.default.deserializeUser(function (id, done) { return __awaiter(void 0
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                console.log(id);
                 return [4 /*yield*/, userRepository.findOne({
                         where: { _id: new typeorm_1.ObjectId(id) },
                     })];
             case 1:
                 user = _a.sent();
-                console.log(user);
                 if (user) {
                     done(null, user);
                 }

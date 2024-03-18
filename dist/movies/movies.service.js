@@ -52,7 +52,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDetails = exports.getMovieById = exports.movieGetReqConvert = void 0;
 var axios_1 = __importDefault(require("axios"));
-require("../core/evn.config");
+require("../core/evnConfig");
 var tmdbBaseUrl = process.env.TMDB_BASE_URL;
 // const baseMovieImage = process.env.TMDB_BASE_MOVIE_IMG;
 // const discoverTvPath = "discover/tv?";

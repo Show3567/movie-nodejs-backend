@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useJwtStrategy = void 0;
 var passport_jwt_1 = require("passport-jwt");
-require("../../core/evn.config");
+require("../../core/evnConfig");
 var user_entity_1 = require("../entities/user.entity");
 var typeOrmConfig_1 = require("../../core/typeOrmConfig");
 var options_ignaoreExpire = {
@@ -63,15 +63,12 @@ var strategyCreator = function (options) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log("payload: ", payload);
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
+                    _a.trys.push([0, 2, , 3]);
                     userRepository = typeOrmConfig_1.AppDataSource.getRepository(user_entity_1.User);
                     return [4 /*yield*/, userRepository.findOne({
                             where: { email: payload.email },
                         })];
-                case 2:
+                case 1:
                     user = _a.sent();
                     if (user) {
                         return [2 /*return*/, done(null, user)];
@@ -81,12 +78,11 @@ var strategyCreator = function (options) {
                                 message: "Incorrect username or password.",
                             })];
                     }
-                    return [3 /*break*/, 4];
-                case 3:
+                    return [3 /*break*/, 3];
+                case 2:
                     error_1 = _a.sent();
-                    console.log(error_1);
                     return [2 /*return*/, done(error_1, false)];
-                case 4: return [2 /*return*/];
+                case 3: return [2 /*return*/];
             }
         });
     }); });

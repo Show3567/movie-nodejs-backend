@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authConfig = void 0;
 var passport_1 = __importDefault(require("passport"));
 var express_session_1 = __importDefault(require("express-session"));
-require("../core/evn.config");
+require("./evnConfig");
 var connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
 // import "../auth/cryptography/main"; // test;
 // import "../auth/cryptography/createKeypair"; // create pem;

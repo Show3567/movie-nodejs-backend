@@ -86,4 +86,14 @@ import "./core/evnConfig";
   & logger;
   $ npm install winston
   $ npm install @types/winston --save-dev
+
+  & create docker file Dockerfile: my image name is movie-backend;
+  $ docker build -t <your-image-name> .
+  $ docker run -p 8800:3344 -d <your-image-name>
+
+  & stop the docker service in local;
+  $ docker ps
+  $ docker stop <container-id-or-name>
+  $ docker rm <container-id-or-name> // optional, this will remove the image;
+  $ docker run -p 8800:3344 -d <your-image-name> // recreate the image;
 */

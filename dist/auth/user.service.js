@@ -46,7 +46,7 @@ var passport_util_1 = require("./passport-strategies/passport-util/passport-util
 var typeOrmConfig_1 = require("../core/typeOrmConfig");
 var user_entity_1 = require("./entities/user.entity");
 var user_role_enum_1 = require("./enum/user-role.enum");
-require("../core/evn.config");
+require("../core/evnConfig");
 var userRepo = typeOrmConfig_1.AppDataSource.getRepository(user_entity_1.User);
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ private function;
 var createToken = function (user) {

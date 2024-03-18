@@ -45,9 +45,10 @@ var routes_1 = require("./core/routes");
 var errorHandler_1 = require("./errors/errorHandler");
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ database connection;
 require("./core/typeOrmConfig");
-require("./core/evn.config");
-console.log(process.env.NODE_ENV);
-console.log(process.env.TEST);
+// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ env config;
+require("./core/evnConfig");
+// console.log(process.env.NODE_ENV);
+// console.log(process.env.TEST);
 (function () { return __awaiter(void 0, void 0, void 0, function () {
     var app, port;
     return __generator(this, function (_a) {
@@ -116,4 +117,8 @@ console.log(process.env.TEST);
 
   & set env;
   $ npm install --save-dev cross-env
+
+  & logger;
+  $ npm install winston
+  $ npm install @types/winston --save-dev
 */
