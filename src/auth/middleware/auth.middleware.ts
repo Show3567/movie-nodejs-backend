@@ -1,6 +1,7 @@
 import { plainToInstance } from "class-transformer";
 import { ValidationError, validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
+import logger, { loggerErr } from "../../core/loggerConfig";
 
 // Extend the Express Request interface to include Passport.js properties
 interface PassportRequest extends Request {
@@ -17,6 +18,9 @@ export const isAuth = (
 	if (req.isAuthenticated()) {
 		next();
 	} else {
+		logger.error(
+			loggerErr("isAuth_middleware", 401, `You are not authorized!`)
+		);
 		res.status(401).json({ messgage: `You are not authorized!` });
 	}
 };
@@ -33,8 +37,10 @@ export const dtoCheck = (
 		if (errors.length > 0) {
 			if (callback) {
 				const err = callback(errors);
+				logger.error(loggerErr("dtoCheck", 400, "", err));
 				res.status(400).json(err);
 			} else {
+				logger.error(loggerErr("dtoCheck", 400, "", errors));
 				res.status(400).json(errors);
 			}
 		}

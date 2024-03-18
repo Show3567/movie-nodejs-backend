@@ -78,6 +78,9 @@ export const signUp: RequestHandler = async (req, res) => {
 	});
 	const accessToken = userfromdb ? createToken(userfromdb) : "";
 
+	logger.info(
+		loggerInfo("signup", 201, { accessToken, role: user.role })
+	);
 	res.status(201).json({ accessToken, role: user.role });
 };
 
@@ -97,9 +100,19 @@ export const updateUser: RequestHandler = async (req, res) => {
 	});
 	if (userFromDB) {
 		const accessToken: string = createToken(userFromDB);
+
+		logger.info(
+			loggerInfo("updateUser", 205, {
+				accessToken,
+				role: userFromDB.role,
+			})
+		);
 		res.status(205).json({ accessToken, role: userFromDB.role });
 	} else {
-		res.status(201).json(req.user);
+		logger.error(
+			loggerErr("updateUser", 401, "cannot update the User info")
+		);
+		res.status(401).json(req.user);
 	}
 };
 
@@ -110,14 +123,30 @@ export const deleteUserById: RequestHandler = async (req, res) => {
 		where: { _id: new ObjectId(id) as any },
 	});
 	if (!userfromdb) {
+		logger.error(
+			loggerErr(
+				"deleteUserById",
+				404,
+				`User which ID is "${id}" not found!`
+			)
+		);
 		res.status(404).json({
 			message: `User which ID is "${id}" not found!`,
 		});
-	} else if (userfromdb.role !== UserRole.ADMIN)
+	} else if (userfromdb.role !== UserRole.ADMIN) {
+		logger.error(
+			loggerErr(
+				"updateUser",
+				401,
+				`You don't have the permission to delete a user.`
+			)
+		);
 		res.status(401).json({
 			message: `You don't have the permission to delete a user.`,
 		});
+	}
 	await userRepo.delete({ _id: new ObjectId(id) as any });
+	logger.info(loggerInfo("updateUser", 201, { message: "success!" }));
 	res.status(204);
 };
 
@@ -129,11 +158,19 @@ export const refreshToken: RequestHandler = async (req, res) => {
 		});
 		if (user) {
 			const accessToken: string = createToken(user);
-			res.status(201).json({ accessToken, role: user.role });
+
+			logger.info(
+				loggerInfo("refreshToken", 200, {
+					accessToken,
+					role: user.role,
+				})
+			);
+			res.status(200).json({ accessToken, role: user.role });
 		} else {
-			res
-				.status(201)
-				.json({ message: "Please complete your user info" });
+			logger.error(
+				loggerErr("refreshToken", 404, "Cannot find the user!")
+			);
+			res.status(404).json({ message: "Cannot find the user!" });
 		}
 	}
 };
@@ -144,13 +181,16 @@ export const checkEmail: RequestHandler = async function (req, res) {
 		where: { email: (req.body as CheckEmailDto).email },
 	});
 	if (user) {
+		logger.info(loggerInfo("checkEmail", 200, { hasUser: true }));
 		res.status(200).send(true);
 	} else {
+		logger.info(loggerInfo("checkEmail", 200, { hasUser: false }));
 		res.status(200).send(false);
 	}
 };
 
 export const getUsers: RequestHandler = async (req, res) => {
 	const users = await userRepo.find();
+	logger.info(loggerInfo("getUsers", 200, users));
 	res.status(200).json(users);
 };
