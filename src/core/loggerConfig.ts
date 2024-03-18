@@ -1,4 +1,5 @@
 import * as winston from "winston";
+import { LogErr, Loginfo } from "./interfaces/error.interface";
 
 const logger = winston.createLogger({
 	level: "info",
@@ -11,20 +12,17 @@ const logger = winston.createLogger({
 		new winston.transports.File({ filename: "app.log" }),
 	],
 });
-export const loggerInfo = (
-	method: string,
-	code: number,
-	res?: {}
-) => {
-	return { method, status: code, res };
+
+export const loggerInfo: Loginfo = (method, status, res = {}) => {
+	return { method, status, res };
 };
-export const loggerErr = (
-	method: string,
-	code: number,
-	errMsg: string = "",
+export const loggerErr: LogErr = (
+	method,
+	status,
+	errMsg = "",
 	err = {}
 ) => {
-	return { method, status: code, errMsg, err };
+	return { method, status: status, errMsg, err };
 };
 
 export default logger;
