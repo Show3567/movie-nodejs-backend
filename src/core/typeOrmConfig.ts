@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { User } from "../auth/entities/user.entity";
 import { SessionEntity } from "./entities/SessionEntity";
-import "./evn.config";
+import "./evnConfig";
 
 export const AppDataSource = new DataSource({
 	type: "mongodb",

@@ -2,12 +2,13 @@ import express, { Express } from "express";
 import { authConfig } from "./core/authConfig";
 import { routersConfig } from "./core/routes";
 import { errorHandler } from "./errors/errorHandler";
+import logger from "./core/loggerConfig";
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ database connection;
 import "./core/typeOrmConfig";
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ env config;
-import "./core/evn.config";
+import "./core/evnConfig";
 // console.log(process.env.NODE_ENV);
 // console.log(process.env.TEST);
 
