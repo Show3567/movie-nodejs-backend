@@ -27,6 +27,7 @@ import "./core/evnConfig";
 	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ server;
 	const port = process.env.PORT || 4231;
 	app.listen(port, () => {
+		logger.info(`Server is running on port: ${port}`);
 		console.log(`Server is running on port: ${port}`);
 	});
 })();

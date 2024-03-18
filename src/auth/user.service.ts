@@ -10,6 +10,7 @@ import { User } from "./entities/user.entity";
 import { UserRole } from "./enum/user-role.enum";
 import "../core/evnConfig";
 import { CheckEmailDto } from "./dto/check-email.dto";
+import logger, { loggerErr, loggerInfo } from "../core/loggerConfig";
 
 const userRepo = AppDataSource.getRepository(User);
 
@@ -36,8 +37,15 @@ export const signIn: RequestHandler = async (req, res) => {
 
 	if (user && (await validPassword(password, user.password))) {
 		const accessToken: string = createToken(user);
+
+		logger.info(
+			loggerInfo("signin", 201, { accessToken, role: user.role })
+		);
 		res.status(201).json({ accessToken, role: user.role });
 	} else {
+		logger.error(
+			loggerErr("signin", 401, "Please check your login credentials")
+		);
 		res
 			.status(401)
 			.json({ errMsg: "Please check your login credentials" });
@@ -49,8 +57,12 @@ export const signUp: RequestHandler = async (req, res) => {
 	const { username, password, email, role }: User = req.body;
 
 	// 409: 'Conflict';
-	if (!!(await userRepo.findOne({ where: { email } })))
+	if (!!(await userRepo.findOne({ where: { email } }))) {
+		logger.error(
+			loggerErr("signup", 409, "User Already Exist. Please Login")
+		);
 		res.status(409).send("User Already Exist. Please Login");
+	}
 
 	// create user;
 	const user = userRepo.create({

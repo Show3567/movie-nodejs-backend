@@ -11,5 +11,20 @@ const logger = winston.createLogger({
 		new winston.transports.File({ filename: "app.log" }),
 	],
 });
+export const loggerInfo = (
+	method: string,
+	code: number,
+	res?: {}
+) => {
+	return { method, status: code, res };
+};
+export const loggerErr = (
+	method: string,
+	code: number,
+	errMsg: string = "",
+	err = {}
+) => {
+	return { method, status: code, errMsg, err };
+};
 
 export default logger;
