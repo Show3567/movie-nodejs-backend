@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -47,6 +70,7 @@ var typeOrmConfig_1 = require("../core/typeOrmConfig");
 var user_entity_1 = require("./entities/user.entity");
 var user_role_enum_1 = require("./enum/user-role.enum");
 require("../core/evnConfig");
+var loggerConfig_1 = __importStar(require("../core/loggerConfig"));
 var userRepo = typeOrmConfig_1.AppDataSource.getRepository(user_entity_1.User);
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ private function;
 var createToken = function (user) {
@@ -79,9 +103,11 @@ var signIn = function (req, res) { return __awaiter(void 0, void 0, void 0, func
             case 3:
                 if (_b) {
                     accessToken = createToken(user);
+                    loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("signin", 201, { accessToken: accessToken, role: user.role }));
                     res.status(201).json({ accessToken: accessToken, role: user.role });
                 }
                 else {
+                    loggerConfig_1.default.error((0, loggerConfig_1.loggerErr)("signin", 401, "Please check your login credentials"));
                     res
                         .status(401)
                         .json({ errMsg: "Please check your login credentials" });
@@ -102,8 +128,10 @@ var signUp = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                 return [4 /*yield*/, userRepo.findOne({ where: { email: email } })];
             case 1:
                 // 409: 'Conflict';
-                if (!!(_e.sent()))
+                if (!!(_e.sent())) {
+                    loggerConfig_1.default.error((0, loggerConfig_1.loggerErr)("signup", 409, "User Already Exist. Please Login"));
                     res.status(409).send("User Already Exist. Please Login");
+                }
                 _c = (_b = userRepo).create;
                 _d = {
                     username: username
@@ -123,6 +151,7 @@ var signUp = function (req, res) { return __awaiter(void 0, void 0, void 0, func
             case 4:
                 userfromdb = _e.sent();
                 accessToken = userfromdb ? createToken(userfromdb) : "";
+                loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("signup", 201, { accessToken: accessToken, role: user.role }));
                 res.status(201).json({ accessToken: accessToken, role: user.role });
                 return [2 /*return*/];
         }
@@ -149,10 +178,15 @@ var updateUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 userFromDB = _c.sent();
                 if (userFromDB) {
                     accessToken = createToken(userFromDB);
+                    loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("updateUser", 205, {
+                        accessToken: accessToken,
+                        role: userFromDB.role,
+                    }));
                     res.status(205).json({ accessToken: accessToken, role: userFromDB.role });
                 }
                 else {
-                    res.status(201).json(req.user);
+                    loggerConfig_1.default.error((0, loggerConfig_1.loggerErr)("updateUser", 401, "cannot update the User info"));
+                    res.status(401).json(req.user);
                 }
                 return [2 /*return*/];
         }
@@ -172,17 +206,21 @@ var deleteUserById = function (req, res) { return __awaiter(void 0, void 0, void
             case 1:
                 userfromdb = _a.sent();
                 if (!userfromdb) {
+                    loggerConfig_1.default.error((0, loggerConfig_1.loggerErr)("deleteUserById", 404, "User which ID is \"".concat(id, "\" not found!")));
                     res.status(404).json({
                         message: "User which ID is \"".concat(id, "\" not found!"),
                     });
                 }
-                else if (userfromdb.role !== user_role_enum_1.UserRole.ADMIN)
+                else if (userfromdb.role !== user_role_enum_1.UserRole.ADMIN) {
+                    loggerConfig_1.default.error((0, loggerConfig_1.loggerErr)("updateUser", 401, "You don't have the permission to delete a user."));
                     res.status(401).json({
                         message: "You don't have the permission to delete a user.",
                     });
+                }
                 return [4 /*yield*/, userRepo.delete({ _id: new typeorm_1.ObjectId(id) })];
             case 2:
                 _a.sent();
+                loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("updateUser", 201, { message: "success!" }));
                 res.status(204);
                 return [2 /*return*/];
         }
@@ -203,12 +241,15 @@ var refreshToken = function (req, res) { return __awaiter(void 0, void 0, void 0
                 user = _a.sent();
                 if (user) {
                     accessToken = createToken(user);
-                    res.status(201).json({ accessToken: accessToken, role: user.role });
+                    loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("refreshToken", 200, {
+                        accessToken: accessToken,
+                        role: user.role,
+                    }));
+                    res.status(200).json({ accessToken: accessToken, role: user.role });
                 }
                 else {
-                    res
-                        .status(201)
-                        .json({ message: "Please complete your user info" });
+                    loggerConfig_1.default.error((0, loggerConfig_1.loggerErr)("refreshToken", 404, "Cannot find the user!"));
+                    res.status(404).json({ message: "Cannot find the user!" });
                 }
                 _a.label = 2;
             case 2: return [2 /*return*/];
@@ -228,9 +269,11 @@ var checkEmail = function (req, res) {
                 case 1:
                     user = _a.sent();
                     if (user) {
+                        loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("checkEmail", 200, { hasUser: true }));
                         res.status(200).send(true);
                     }
                     else {
+                        loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("checkEmail", 200, { hasUser: false }));
                         res.status(200).send(false);
                     }
                     return [2 /*return*/];
@@ -246,6 +289,7 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
             case 0: return [4 /*yield*/, userRepo.find()];
             case 1:
                 users = _a.sent();
+                loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("getUsers", 200, users));
                 res.status(200).json(users);
                 return [2 /*return*/];
         }

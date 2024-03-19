@@ -46,3 +46,5 @@ movieRouter
 	);
 
 export default movieRouter;
+
+// gateway, authservice, discoverservice, configservice, featureservices

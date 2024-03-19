@@ -10,6 +10,29 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -53,6 +76,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDetails = exports.getMovieById = exports.movieGetReqConvert = void 0;
 var axios_1 = __importDefault(require("axios"));
 require("../core/evnConfig");
+var loggerConfig_1 = __importStar(require("../core/loggerConfig"));
 var tmdbBaseUrl = process.env.TMDB_BASE_URL;
 // const baseMovieImage = process.env.TMDB_BASE_MOVIE_IMG;
 // const discoverTvPath = "discover/tv?";
@@ -72,6 +96,7 @@ var movieGetReqConvert = function (PATH) {
                     return [4 /*yield*/, axios_1.default.get(url).then(function (ele) { return ele.data; })];
                 case 1:
                     result = _a.sent();
+                    loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("getMovie/".concat(PATH), 200));
                     res.status(200).json(result);
                     return [2 /*return*/];
             }
@@ -88,6 +113,7 @@ var getMovieById = function (req, res) { return __awaiter(void 0, void 0, void 0
                 return [4 /*yield*/, axios_1.default.get(url).then(function (ele) { return ele.data; })];
             case 1:
                 result = _a.sent();
+                loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("getMovieById", 200));
                 res.status(200).json(result);
                 return [2 /*return*/];
         }
@@ -106,10 +132,12 @@ var getDetails = function (PATH) {
                     return [4 /*yield*/, axios_1.default.get(url).then(function (ele) { return ele.data; })];
                 case 1:
                     result = _a.sent();
+                    loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("getDetails/".concat(PATH), 200));
                     res.status(200).json(result);
                     return [3 /*break*/, 3];
                 case 2:
                     // expected err;
+                    loggerConfig_1.default.error((0, loggerConfig_1.loggerErr)("getDetails/".concat(PATH), 404, "Cannot found this id"));
                     res.status(404).json({ message: "Cannot found this id" });
                     _a.label = 3;
                 case 3: return [2 /*return*/];

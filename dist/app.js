@@ -43,6 +43,7 @@ var express_1 = __importDefault(require("express"));
 var authConfig_1 = require("./core/authConfig");
 var routes_1 = require("./core/routes");
 var errorHandler_1 = require("./errors/errorHandler");
+var loggerConfig_1 = __importDefault(require("./core/loggerConfig"));
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ database connection;
 require("./core/typeOrmConfig");
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ env config;
@@ -61,6 +62,7 @@ require("./core/evnConfig");
         app.use(errorHandler_1.errorHandler);
         port = process.env.PORT || 4231;
         app.listen(port, function () {
+            loggerConfig_1.default.info("Server is running on port: ".concat(port));
             console.log("Server is running on port: ".concat(port));
         });
         return [2 /*return*/];
@@ -121,4 +123,14 @@ require("./core/evnConfig");
   & logger;
   $ npm install winston
   $ npm install @types/winston --save-dev
+
+  & create docker file Dockerfile: my image name is movie-backend;
+  $ docker build -t <your-image-name> .
+  $ docker run -p 8800:3344 -d <your-image-name>
+
+  & stop the docker service in local;
+  $ docker ps
+  $ docker stop <container-id-or-name>
+  $ docker rm <container-id-or-name> // optional, this will remove the image;
+  $ docker run -p 8800:3344 -d <your-image-name> // recreate the image;
 */

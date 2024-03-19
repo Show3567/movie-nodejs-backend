@@ -23,6 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.loggerErr = exports.loggerInfo = void 0;
 var winston = __importStar(require("winston"));
 var logger = winston.createLogger({
     level: "info",
@@ -32,4 +33,15 @@ var logger = winston.createLogger({
         new winston.transports.File({ filename: "app.log" }),
     ],
 });
+var loggerInfo = function (method, status, res) {
+    if (res === void 0) { res = {}; }
+    return { method: method, status: status, res: res };
+};
+exports.loggerInfo = loggerInfo;
+var loggerErr = function (method, status, errMsg, err) {
+    if (errMsg === void 0) { errMsg = ""; }
+    if (err === void 0) { err = {}; }
+    return { method: method, status: status, errMsg: errMsg, err: err };
+};
+exports.loggerErr = loggerErr;
 exports.default = logger;
