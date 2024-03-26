@@ -8,12 +8,16 @@ import "../../core/evnConfig";
 
 import { User } from "../entities/user.entity";
 import { AppDataSource } from "../../core/typeOrmConfig";
+import { getKey } from "../cryptography/verifyIdentitiy";
+import { Algorithm } from "jsonwebtoken";
+
+const { key, algorithm } = getKey("pub");
 
 const options_ignaoreExpire: StrategyOptionsWithoutRequest = {
 	// * ~~~~~~~~~~~~~~~~~~ "Authentication": "Bearer <token>"
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-	secretOrKey: process.env.JWT_SECRET || "", // publicKey
-	algorithms: ["HS256"],
+	secretOrKey: key as string,
+	algorithms: [algorithm as Algorithm],
 	ignoreExpiration: true,
 	// issuer: 'enter issuer here',
 	// audience: 'enter audience here',

@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import { decryptWithPrivateKey } from "./decrypt";
 import { packageOfDataToSend } from "./signMessage";
 import { hashMessage } from "./hashMessage";
+import path from "path";
 
 const hash = crypto.createHash(packageOfDataToSend.algorithm);
 
@@ -34,3 +35,18 @@ if (hashOfOriginalHex === decryptedMessageHex) {
 } else {
 	console.log("No no no...");
 }
+
+const fileExistsInFolder = (fileName: "priv" | "pub") => {
+	const filePath = path.join(__dirname, `/id_rsa_${fileName}.pem`);
+	return fs.existsSync(filePath);
+};
+
+export const getKey = (fileName: "priv" | "pub") => {
+	const fileExist = fileExistsInFolder(fileName);
+	const key = fileExist
+		? fs.readFileSync(__dirname + `/id_rsa_${fileName}.pem`, "utf-8")
+		: process.env.JWT_SECRET;
+	const algorithm = fileExist ? "RS256" : "HS256";
+
+	return { key, algorithm };
+};
