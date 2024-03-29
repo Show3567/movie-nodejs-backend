@@ -25,8 +25,8 @@ const options_ignaoreExpire: StrategyOptionsWithoutRequest = {
 };
 const options_expire: StrategyOptionsWithoutRequest = {
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-	secretOrKey: process.env.JWT_SECRET || "", // publicKey
-	algorithms: ["HS256"],
+	secretOrKey: key as string,
+	algorithms: [algorithm as Algorithm],
 	ignoreExpiration: false,
 };
 

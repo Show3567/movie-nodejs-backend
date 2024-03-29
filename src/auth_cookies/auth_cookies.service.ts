@@ -3,8 +3,12 @@ import { getKey } from "../auth/cryptography/verifyIdentitiy";
 import jwt, { Algorithm, JwtPayload } from "jsonwebtoken";
 import { User } from "../auth/entities/user.entity";
 import { AppDataSource } from "../core/typeOrmConfig";
-import { validPassword } from "../auth/passport-strategies/passport-util/passport-util";
+import {
+	genPassword,
+	validPassword,
+} from "../auth/passport-strategies/passport-util/passport-util";
 import logger, { loggerErr, loggerInfo } from "../core/loggerConfig";
+import { UserRole } from "../auth/enum/user-role.enum";
 
 const userRepo = AppDataSource.getRepository(User);
 
@@ -43,4 +47,33 @@ export const signin: RequestHandler = async (req, res) => {
 	}
 };
 
-export const signup: RequestHandler = (req, res) => {};
+export const signUp: RequestHandler = async (req, res) => {
+	const { username, password, email, role }: User = req.body;
+
+	// 409: 'Conflict';
+	if (!!(await userRepo.findOne({ where: { email } }))) {
+		logger.error(
+			loggerErr("signup", 409, "User Already Exist. Please Login")
+		);
+		res.status(409).send("User Already Exist. Please Login");
+	}
+
+	// create user;
+	const user = userRepo.create({
+		username,
+		password: (await genPassword(password)).hash,
+		email,
+		role: UserRole[role] || UserRole.USER,
+	});
+
+	await userRepo.save(user);
+	const userfromdb = await userRepo.findOne({
+		where: { email },
+	});
+	const accessToken = userfromdb ? createToken(userfromdb) : "";
+
+	logger.info(
+		loggerInfo("signup", 201, { accessToken, role: user.role })
+	);
+	res.status(201).json({ accessToken, role: user.role });
+};
