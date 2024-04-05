@@ -1,11 +1,12 @@
 import { CookieStrategy } from "passport-cookie";
-import { Algorithm, VerifyOptions, verify } from "jsonwebtoken";
+import jwt, { Algorithm, Jwt, VerifyOptions } from "jsonwebtoken";
 import { DoneCallback } from "passport";
 import "../../core/evnConfig";
 
 import { User } from "../entities/user.entity";
 import { AppDataSource } from "../../core/typeOrmConfig";
 import { getKey } from "../cryptography/verifyIdentitiy";
+import { JwtPayload } from "../interfaces/jwt-payload.interface";
 
 const { key, algorithm } = getKey("pub");
 
@@ -17,23 +18,31 @@ const userRepository = AppDataSource.getRepository(User);
 
 const strategyCreator = (options: any) => {
 	return new CookieStrategy((token: string, done: DoneCallback) => {
-		verify(token, key, options, async (err, payload: any) => {
-			if (err) {
-				return done(err);
-			}
-			try {
-				const user = await userRepository.findOne({
-					where: { email: payload.email },
-				});
-				if (user) {
-					return done(null, user);
-				} else {
-					return done(null, false);
+		jwt.verify(
+			token,
+			key,
+			options,
+			async (err, decoded: Jwt | undefined) => {
+				if (err) {
+					return done(err);
 				}
-			} catch (error) {
-				return done(error, false);
+				try {
+					const payload = decoded?.payload as JwtPayload;
+					if (payload) {
+						const user = await userRepository.findOne({
+							where: { email: payload.email },
+						});
+						if (user) {
+							return done(null, user);
+						} else {
+							return done(null, false);
+						}
+					}
+				} catch (error) {
+					return done(error, false);
+				}
 			}
-		});
+		);
 	});
 };
 
