@@ -32,6 +32,7 @@
 		"mongoose": "^8.2.1",
 		"mysql2": "^3.9.2",
 		"passport": "^0.7.0",
+		"passport-cookie": "^1.0.9",
 		"passport-jwt": "^4.0.1",
 		"passport-local": "^1.0.0",
 		"redis": "^4.6.13",

@@ -4,6 +4,7 @@ import { decryptWithPrivateKey } from "./decrypt";
 import { packageOfDataToSend } from "./signMessage";
 import { hashMessage } from "./hashMessage";
 import path from "path";
+import { Algorithm, Secret } from "jsonwebtoken";
 
 const hash = crypto.createHash(packageOfDataToSend.algorithm);
 
@@ -41,11 +42,13 @@ const fileExistsInFolder = (fileName: "priv" | "pub") => {
 	return fs.existsSync(filePath);
 };
 
-export const getKey = (fileName: "priv" | "pub") => {
+export const getKey = (
+	fileName: "priv" | "pub"
+): { key: Secret; algorithm: Algorithm } => {
 	const fileExist = fileExistsInFolder(fileName);
 	const key = fileExist
 		? fs.readFileSync(__dirname + `/id_rsa_${fileName}.pem`, "utf-8")
-		: process.env.JWT_SECRET;
+		: (process.env.JWT_SECRET as Secret);
 	const algorithm = fileExist ? "RS256" : "HS256";
 
 	return { key, algorithm };

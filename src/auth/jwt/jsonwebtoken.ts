@@ -1,5 +1,7 @@
 import fs from "fs";
 import jwt from "jsonwebtoken";
+import { Repository } from "typeorm";
+import { User } from "../entities/user.entity";
 
 const privateKey = fs.readFileSync(
 	__dirname + "../cryptography/id_rsa_priv.pem",
@@ -19,12 +21,13 @@ export const createJwt = (
 };
 
 export const verifyJwt = (
-	signedJwt: string,
+	token: string,
 	publicKey: string,
-	algorithm: jwt.Algorithm
+	algorithm: jwt.Algorithm,
+	userRepository: Repository<User>
 ) => {
 	return jwt.verify(
-		signedJwt,
+		token,
 		publicKey,
 		{ algorithms: [algorithm] },
 		(err, payload) => {
