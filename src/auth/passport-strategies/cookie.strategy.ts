@@ -1,27 +1,44 @@
 import { CookieStrategy } from "passport-cookie";
-import jwt from "jsonwebtoken";
+import { Algorithm, VerifyOptions, verify } from "jsonwebtoken";
+import { DoneCallback } from "passport";
 import { Repository } from "typeorm";
 import "../../core/evnConfig";
 
 import { User } from "../entities/user.entity";
 import { AppDataSource } from "../../core/typeOrmConfig";
 import { getKey } from "../cryptography/verifyIdentitiy";
-import { Algorithm } from "jsonwebtoken";
-import { DoneCallback } from "passport";
 
 const { key, algorithm } = getKey("pub");
 
-const options = {
+const options: VerifyOptions = {
 	algorithms: [algorithm as Algorithm],
 	ignoreExpiration: true,
 };
+const userRepository: Repository<User> =
+	AppDataSource.getRepository(User);
 
 const strategyCreator = (options: any) => {
 	return new CookieStrategy((token: string, done: DoneCallback) => {
-		jwt.verify(token, key, options, (err, payload) => {});
+		verify(token, key, options, async (err, payload: any) => {
+			if (err) {
+				return done(err);
+			}
+			try {
+				const user = await userRepository.findOne({
+					where: { email: payload.email },
+				});
+				if (user) {
+					return done(null, user);
+				} else {
+					return done(null, false);
+				}
+			} catch (error) {
+				return done(error, false);
+			}
+		});
 	});
 };
 
-export const useJwtStrategy = (passport: any) => {
+export const useCookieStrategy = (passport: any) => {
 	passport.use("cookie", strategyCreator(options));
 };
