@@ -1,7 +1,6 @@
 import { CookieStrategy } from "passport-cookie";
 import { Algorithm, VerifyOptions, verify } from "jsonwebtoken";
 import { DoneCallback } from "passport";
-import { Repository } from "typeorm";
 import "../../core/evnConfig";
 
 import { User } from "../entities/user.entity";
@@ -14,8 +13,7 @@ const options: VerifyOptions = {
 	algorithms: [algorithm as Algorithm],
 	ignoreExpiration: true,
 };
-const userRepository: Repository<User> =
-	AppDataSource.getRepository(User);
+const userRepository = AppDataSource.getRepository(User);
 
 const strategyCreator = (options: any) => {
 	return new CookieStrategy((token: string, done: DoneCallback) => {
