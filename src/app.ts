@@ -9,8 +9,6 @@ import "./core/typeOrmConfig";
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ env config;
 import "./core/evnConfig";
-// console.log(process.env.NODE_ENV);
-// console.log(process.env.TEST);
 
 (async () => {
 	const app: Express = express();
@@ -26,6 +24,7 @@ import "./core/evnConfig";
 
 	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ server;
 	const port = process.env.PORT || 4231;
+
 	app.listen(port, () => {
 		logger.info(`Server is running on port: ${port}`);
 		console.log(`Server is running on port: ${port}`);

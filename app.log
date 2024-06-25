@@ -369,3 +369,6 @@
 {"level":"info","message":{"method":"getMovieById","res":{},"status":200},"timestamp":"2024-06-21T18:24:45.582Z"}
 {"level":"info","message":{"method":"getDetails/images","res":{},"status":200},"timestamp":"2024-06-21T18:24:45.760Z"}
 {"level":"info","message":{"method":"getDetails/credits","res":{},"status":200},"timestamp":"2024-06-21T18:24:45.833Z"}
+{"level":"info","message":"Server is running on port: 5566","timestamp":"2024-06-25T03:20:57.469Z"}
+{"level":"info","message":"Server is running on port: 5566","timestamp":"2024-06-25T03:21:28.359Z"}
+{"level":"info","message":"Server is running on port: 5566","timestamp":"2024-06-25T03:21:38.209Z"}
