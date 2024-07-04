@@ -1,5 +1,5 @@
 # Choose a base image with Node.js
-FROM node:16
+FROM node:18
 # Create app directory
 WORKDIR /app
 # Install app dependencies
