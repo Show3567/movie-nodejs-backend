@@ -4,12 +4,12 @@ import {
 	StrategyOptionsWithoutRequest,
 } from "passport-jwt";
 import { Repository } from "typeorm";
+import { Algorithm } from "jsonwebtoken";
 import "../../core/evnConfig";
 
 import { User } from "../entities/user.entity";
 import { AppDataSource } from "../../core/typeOrmConfig";
 import { getKey } from "../cryptography/verifyIdentitiy";
-import { Algorithm } from "jsonwebtoken";
 
 const { key, algorithm } = getKey("pub");
 

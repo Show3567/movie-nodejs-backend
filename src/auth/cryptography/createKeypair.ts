@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { writeFileSync } from "fs";
 import { join } from "path";
 
