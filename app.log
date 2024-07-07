@@ -3185,3 +3185,7 @@
 {"level":"info","message":{"method":"getMovie/discover/movie","res":{},"status":200},"timestamp":"2024-07-07T01:30:18.631Z"}
 {"level":"info","message":{"method":"getMovie/discover/movie","res":{},"status":200},"timestamp":"2024-07-07T01:30:18.641Z"}
 {"level":"info","message":{"method":"getMovie/discover/movie","res":{},"status":200},"timestamp":"2024-07-07T01:30:53.055Z"}
+{"level":"info","message":"Server is running on port: 5566","timestamp":"2024-07-07T04:24:10.325Z"}
+{"level":"info","message":"Server is running on port: 5566","timestamp":"2024-07-07T04:45:26.653Z"}
+{"level":"info","message":"Server is running on port: 5566","timestamp":"2024-07-07T04:53:39.385Z"}
+{"level":"info","message":"Server is running on port: 5566","timestamp":"2024-07-07T04:53:48.139Z"}

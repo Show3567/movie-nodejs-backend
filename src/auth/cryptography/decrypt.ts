@@ -1,12 +1,5 @@
 import crypto from "node:crypto";
 
-// * ~~~~~~~ PrivateKey ~~~~~~~;
-export const decryptWithPrivateKey = (
-	privateKey: crypto.RsaPrivateKey | crypto.KeyLike,
-	encryptedMessage: NodeJS.ArrayBufferView
-) => {
-	return crypto.privateDecrypt(privateKey, encryptedMessage);
-};
 // * ~~~~~~~ PublicKey ~~~~~~~;
 export const decryptWithPublicKey = (
 	publicKey:
@@ -16,4 +9,12 @@ export const decryptWithPublicKey = (
 	encryptedMessage: NodeJS.ArrayBufferView
 ) => {
 	return crypto.publicDecrypt(publicKey, encryptedMessage);
+};
+
+// * ~~~~~~~ PrivateKey ~~~~~~~;
+export const decryptWithPrivateKey = (
+	privateKey: crypto.RsaPrivateKey | crypto.KeyLike,
+	encryptedMessage: NodeJS.ArrayBufferView
+) => {
+	return crypto.privateDecrypt(privateKey, encryptedMessage);
 };
