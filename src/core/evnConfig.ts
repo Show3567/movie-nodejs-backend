@@ -6,3 +6,8 @@ const evnPath =
 dotenv.config({
 	path: path.resolve(__dirname, "../../", evnPath),
 });
+
+/* 
+  & after using nodejs  20.6.1
+  $ node --env-file .env index.js
+*/
