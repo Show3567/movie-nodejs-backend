@@ -60,7 +60,11 @@ import "./core/evnConfig";
   & mySql;
   $ npm install typescript @types/node mysql2
   $ npm install --save-dev @types/mysql
-  
+
+  & postgre
+  $ npm install typeorm pg reflect-metadata
+  $ npm install typescript ts-node @types/node --save-dev
+
   & TypeOrm;
   $ npm install typeorm mysql reflect-metadata
   $ npm install --save-dev typescript @types/node ts-node
