@@ -21,3 +21,16 @@ export const AppDataSource = new DataSource({
 		console.error("Error during Data Source initialization", error);
 	}
 })();
+
+/* Connect to local postgres 
+    return {
+        type: 'postgres',
+        autoLoadEntities: true,
+        synchronize: true,
+        host: configService.get('DB_HOST'),
+        port: configService.get('DB_PORT'),
+        username: configService.get('DB_USER'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_NAME'),
+    };
+*/
