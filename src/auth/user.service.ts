@@ -17,6 +17,7 @@ const userRepo = AppDataSource.getRepository(User);
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ private function;
 const { key, algorithm } = getKey("priv");
+
 const createToken = function (user: User) {
 	const payload: JwtPayload = {
 		id: user._id.toString(),
