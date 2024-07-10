@@ -31,11 +31,11 @@ const hashOfOriginalHex = hashMessage(
 );
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ compare OriginHex and decryptoHex;
-if (hashOfOriginalHex === decryptedMessageHex) {
-	console.log("success");
-} else {
-	console.log("No no no...");
-}
+// if (hashOfOriginalHex === decryptedMessageHex) {
+// 	console.log("success");
+// } else {
+// 	console.log("No no no...");
+// }
 
 const fileExistsInFolder = (fileName: "priv" | "pub") => {
 	const filePath = path.join(__dirname, `/id_rsa_${fileName}.pem`);
