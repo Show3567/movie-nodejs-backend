@@ -35,7 +35,7 @@ import "./core/evnConfig";
   & init project, install express;
   $ npm init
   $ npm i express
-  $ npm i @type/express
+  $ npm i @types/express
 
   & nodemon with ts;
   $ npm install -D nodemon typescript ts-node
