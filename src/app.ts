@@ -1,4 +1,6 @@
 import express, { Express } from "express";
+import cluster from "cluster";
+import os from "os";
 import { authConfig } from "./core/authConfig";
 import { routersConfig } from "./core/routes";
 import { errorHandler } from "./errors/errorHandler";
@@ -9,7 +11,29 @@ import "./core/typeOrmConfig";
 
 // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ env config;
 import "./core/evnConfig";
+import { handleSIGINT, handleSIGTERM } from "./core/gracefulShutdown";
 
+// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ server;
+const port = process.env.PORT || 4231;
+
+// * adding cluster to improve i/o performance;
+// if (cluster.isPrimary) {
+// 	const numCPUs = os.cpus().length;
+// 	console.log(
+// 		`Master process is running. Forking ${numCPUs} workers...`
+// 	);
+
+// 	for (let i = 0; i < numCPUs; i++) {
+// 		cluster.fork();
+// 	}
+
+// 	cluster.on("exit", (worker, code, signal) => {
+// 		console.log(
+// 			`Worker ${worker.process.pid} died. Forking a new worker...`
+// 		);
+// 		cluster.fork();
+// 	});
+// } else {
 (async () => {
 	const app: Express = express();
 
@@ -22,14 +46,16 @@ import "./core/evnConfig";
 	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ global error handler;
 	app.use(errorHandler);
 
-	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ server;
-	const port = process.env.PORT || 4231;
-
-	app.listen(port, () => {
+	const server = app.listen(port, () => {
 		logger.info(`Server is running on port: ${port}`);
 		console.log(`Server is running on port: ${port}`);
 	});
+
+	// *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ gracefulShutdown ^_^;
+	process.on("SIGTERM", () => handleSIGTERM(server));
+	process.on("SIGINT", handleSIGINT);
 })();
+// }
 
 /* 
   & init project, install express;
