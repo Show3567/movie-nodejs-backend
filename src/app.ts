@@ -64,7 +64,7 @@ const port = process.env.PORT || 4231;
   $ npm i @types/express
 
   & nodemon with ts;
-  $ npm install -D nodemon typescript ts-node
+  $ npm install -D nodemon typescript ts-node esm
 
   & edit tsconfig.json;
     "outDir": "./dist"  
