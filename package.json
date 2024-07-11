@@ -6,6 +6,7 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "cross-env NODE_ENV=development npx nodemon --exec ts-node ./src/app.ts",
+		"start:cluster": "cross-env NODE_ENV=development npx nodemon --exec ts-node ./src/core/cluster/clusterMain.ts",
 		"start:dev": "npx nodemon --exec ts-node ./src/app.ts",
 		"build:pro": "tsc",
 		"start:pro": "cross-env NODE_ENV=production node dist/app.js"
