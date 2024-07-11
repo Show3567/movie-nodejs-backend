@@ -1,3 +1,5 @@
+```diff
+
 ### Rate Limiting:
 
 Prevent abuse by limiting the number of requests a user can make in a given time period.
@@ -56,3 +58,5 @@ Support multiple languages and locales in your application.
 ### Task Scheduling:
 
 Use libraries like node-cron or Bull for scheduling tasks and background jobs.
+
+```
