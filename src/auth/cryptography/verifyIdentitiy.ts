@@ -1,9 +1,9 @@
-import fs from "fs";
+import fs from "node:fs";
+import path from "node:path";
 import crypto from "node:crypto";
 import { decryptWithPrivateKey } from "./decrypt";
 import { packageOfDataToSend } from "./signMessage";
 import { hashMessage } from "./hashMessage";
-import path from "path";
 import { Algorithm, Secret } from "jsonwebtoken";
 
 const hash = crypto.createHash(packageOfDataToSend.algorithm);

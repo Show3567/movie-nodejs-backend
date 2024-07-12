@@ -1,49 +1,29 @@
 import express, { Express } from "express";
-import cluster from "cluster";
-import os from "os";
 import { authConfig } from "./core/authConfig";
 import { routersConfig } from "./core/routes";
 import { errorHandler } from "./errors/errorHandler";
 import logger from "./core/loggerConfig";
 
-// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ database connection;
+// * ~~~~~~~~~~~~~~~~~~~~ database connection;
 import "./core/typeOrmConfig";
 
-// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ env config;
+// * ~~~~~~~~~~~~~~~~~~~~ env config;
 import "./core/evnConfig";
 import { handleSIGINT, handleSIGTERM } from "./core/gracefulShutdown";
 
-// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ server;
+// * ~~~~~~~~~~~~~~~~~~~~ server;
 const port = process.env.PORT || 4231;
 
-// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ adding cluster to improve i/o performance;
-// if (cluster.isPrimary) {
-// 	const numCPUs = os.cpus().length;
-// 	console.log(
-// 		`Master process is running. Forking ${numCPUs} workers...`
-// 	);
-
-// 	for (let i = 0; i < numCPUs; i++) {
-// 		cluster.fork();
-// 	}
-
-// 	cluster.on("exit", (worker, code, signal) => {
-// 		console.log(
-// 			`Worker ${worker.process.pid} died. Forking a new worker...`
-// 		);
-// 		cluster.fork();
-// 	});
-// } else {
 (async () => {
 	const app: Express = express();
 
-	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ auth config;
+	// * ~~~~~~~~~~~~~~~~~~~~ auth config;
 	authConfig(app);
 
-	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Router and MiddleWare handler;
+	// * ~~~~~~~~~~~~~~~~~~~~ Router and MiddleWare handler;
 	routersConfig(app);
 
-	// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ global error handler;
+	// * ~~~~~~~~~~~~~~~~~~~~ global error handler;
 	app.use(errorHandler);
 
 	const server = app.listen(port, () => {
@@ -51,11 +31,10 @@ const port = process.env.PORT || 4231;
 		console.log(`Server is running on port: ${port}`);
 	});
 
-	// *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ gracefulShutdown ^_^;
+	// * ~~~~~~~~~~~~~~~~~~~~ gracefulShutdown ^_^;
 	process.on("SIGTERM", () => handleSIGTERM(server));
 	process.on("SIGINT", handleSIGINT);
 })();
-// }
 
 /* 
   & init project, install express;

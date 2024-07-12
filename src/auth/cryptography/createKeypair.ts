@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
-import { writeFileSync } from "fs";
-import { join } from "path";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 
 (function genKeyPair(): void {
 	const keyPair: crypto.KeyPairSyncResult<any, any> =

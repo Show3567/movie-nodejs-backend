@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "node:fs";
 import jwt from "jsonwebtoken";
 import { Repository } from "typeorm";
 import { User } from "../entities/user.entity";
