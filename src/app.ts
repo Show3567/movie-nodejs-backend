@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import { authConfig } from "./core/authConfig";
 import { routersConfig } from "./core/routes";
 import { errorHandler } from "./errors/errorHandler";
+import { setupSwagger } from "./tools/swagger/swagger";
 import logger from "./core/loggerConfig";
 
 // * ~~~~~~~~~~~~~~~~~~~~ database connection;
@@ -25,6 +26,9 @@ const port = process.env.PORT || 4231;
 
 	// * ~~~~~~~~~~~~~~~~~~~~ global error handler;
 	app.use(errorHandler);
+
+	// * ~~~~~~~~~~~~~~~~~~~~ Swagger;
+	setupSwagger(app);
 
 	const server = app.listen(port, () => {
 		logger.info(`Server is running on port: ${port}`);
@@ -111,4 +115,8 @@ const port = process.env.PORT || 4231;
   $ docker stop <container-id-or-name>
   $ docker rm <container-id-or-name> // optional, this will remove the image;
   $ docker run -p 8800:3344 -d <your-image-name> // recreate the image;
+
+  & add swagger
+  $ npm i swagger-ui-express @types/swagger-ui-express
+  $ npm i swagger-jsdoc @types/swagger-jsdoc      
 */
