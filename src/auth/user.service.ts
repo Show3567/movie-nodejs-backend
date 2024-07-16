@@ -91,6 +91,8 @@ export const signUp: RequestHandler = async (req, res) => {
 export const updateUser: RequestHandler = async (req, res) => {
 	const { role } = req.body;
 
+	console.log(role);
+
 	await userRepo.update(
 		{ email: (req.user as User)?.email },
 		{
@@ -110,7 +112,7 @@ export const updateUser: RequestHandler = async (req, res) => {
 				role: userFromDB.role,
 			})
 		);
-		res.status(205).json({ accessToken, role: userFromDB.role });
+		res.status(201).json({ accessToken, role: userFromDB.role });
 	} else {
 		logger.error(
 			loggerErr("updateUser", 401, "cannot update the User info")
