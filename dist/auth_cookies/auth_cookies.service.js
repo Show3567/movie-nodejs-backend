@@ -62,18 +62,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUsers = exports.checkEmail = exports.refreshToken = exports.deleteUserById = exports.updateUser = exports.signUp = exports.signIn = void 0;
+exports.signUp = exports.signin = void 0;
+var verifyIdentitiy_1 = require("../auth/cryptography/verifyIdentitiy");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var typeorm_1 = require("typeorm");
-var passport_util_1 = require("./passport-strategies/passport-util/passport-util");
+var user_entity_1 = require("../auth/entities/user.entity");
 var typeOrmConfig_1 = require("../core/typeOrmConfig");
-var user_entity_1 = require("./entities/user.entity");
-var user_role_enum_1 = require("./enum/user-role.enum");
-require("../core/evnConfig");
+var passport_util_1 = require("../auth/passport-strategies/passport-util/passport-util");
 var loggerConfig_1 = __importStar(require("../core/loggerConfig"));
-var verifyIdentitiy_1 = require("./cryptography/verifyIdentitiy");
+var user_role_enum_1 = require("../auth/enum/user-role.enum");
 var userRepo = typeOrmConfig_1.AppDataSource.getRepository(user_entity_1.User);
-// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ private function;
 var _a = (0, verifyIdentitiy_1.getKey)("priv"), key = _a.key, algorithm = _a.algorithm;
 var createToken = function (user) {
     var payload = {
@@ -87,9 +84,7 @@ var createToken = function (user) {
     });
     return "Bearer ".concat(accessToken);
 };
-// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ API;
-// & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ signin;
-var signIn = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+var signin = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, email, password, user, _b, accessToken;
     return __generator(this, function (_c) {
         switch (_c.label) {
@@ -120,8 +115,7 @@ var signIn = function (req, res) { return __awaiter(void 0, void 0, void 0, func
         }
     });
 }); };
-exports.signIn = signIn;
-// & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ signup;
+exports.signin = signin;
 var signUp = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, username, password, email, role, user, _b, _c, userfromdb, accessToken;
     var _d;
@@ -162,142 +156,3 @@ var signUp = function (req, res) { return __awaiter(void 0, void 0, void 0, func
     });
 }); };
 exports.signUp = signUp;
-// & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ updateUser;
-var updateUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var role, userFromDB, accessToken;
-    var _a, _b;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
-            case 0:
-                role = req.body.role;
-                console.log(role);
-                return [4 /*yield*/, userRepo.update({ email: (_a = req.user) === null || _a === void 0 ? void 0 : _a.email }, {
-                        role: user_role_enum_1.UserRole[role],
-                    })];
-            case 1:
-                _c.sent();
-                return [4 /*yield*/, userRepo.findOne({
-                        where: { email: (_b = req.user) === null || _b === void 0 ? void 0 : _b.email },
-                    })];
-            case 2:
-                userFromDB = _c.sent();
-                if (userFromDB) {
-                    accessToken = createToken(userFromDB);
-                    loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("updateUser", 205, {
-                        accessToken: accessToken,
-                        role: userFromDB.role,
-                    }));
-                    res.status(201).json({ accessToken: accessToken, role: userFromDB.role });
-                }
-                else {
-                    loggerConfig_1.default.error((0, loggerConfig_1.loggerErr)("updateUser", 401, "cannot update the User info"));
-                    res.status(401).json(req.user);
-                }
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.updateUser = updateUser;
-// & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ deleteUserById;
-var deleteUserById = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, userfromdb;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                id = req.params.id;
-                return [4 /*yield*/, userRepo.findOne({
-                        where: { _id: new typeorm_1.ObjectId(id) },
-                    })];
-            case 1:
-                userfromdb = _a.sent();
-                if (!userfromdb) {
-                    loggerConfig_1.default.error((0, loggerConfig_1.loggerErr)("deleteUserById", 404, "User which ID is \"".concat(id, "\" not found!")));
-                    res.status(404).json({
-                        message: "User which ID is \"".concat(id, "\" not found!"),
-                    });
-                }
-                else if (userfromdb.role !== user_role_enum_1.UserRole.ADMIN) {
-                    loggerConfig_1.default.error((0, loggerConfig_1.loggerErr)("updateUser", 401, "You don't have the permission to delete a user."));
-                    res.status(401).json({
-                        message: "You don't have the permission to delete a user.",
-                    });
-                }
-                return [4 /*yield*/, userRepo.delete({ _id: new typeorm_1.ObjectId(id) })];
-            case 2:
-                _a.sent();
-                loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("updateUser", 201, { message: "success!" }));
-                res.status(204);
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.deleteUserById = deleteUserById;
-// & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ refreshToken;
-var refreshToken = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, accessToken;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                if (!(req.user && req.user.email)) return [3 /*break*/, 2];
-                return [4 /*yield*/, userRepo.findOne({
-                        where: { email: req.user.email },
-                    })];
-            case 1:
-                user = _a.sent();
-                if (user) {
-                    accessToken = createToken(user);
-                    loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("refreshToken", 200, {
-                        accessToken: accessToken,
-                        role: user.role,
-                    }));
-                    res.status(200).json({ accessToken: accessToken, role: user.role });
-                }
-                else {
-                    loggerConfig_1.default.error((0, loggerConfig_1.loggerErr)("refreshToken", 404, "Cannot find the user!"));
-                    res.status(404).json({ message: "Cannot find the user!" });
-                }
-                _a.label = 2;
-            case 2: return [2 /*return*/];
-        }
-    });
-}); };
-exports.refreshToken = refreshToken;
-// & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ checkEmail;
-var checkEmail = function (req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var user;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, userRepo.findOne({
-                        where: { email: req.body.email },
-                    })];
-                case 1:
-                    user = _a.sent();
-                    if (user) {
-                        loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("checkEmail", 200, { hasUser: true }));
-                        res.status(200).send(true);
-                    }
-                    else {
-                        loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("checkEmail", 200, { hasUser: false }));
-                        res.status(200).send(false);
-                    }
-                    return [2 /*return*/];
-            }
-        });
-    });
-};
-exports.checkEmail = checkEmail;
-var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var users;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, userRepo.find()];
-            case 1:
-                users = _a.sent();
-                loggerConfig_1.default.info((0, loggerConfig_1.loggerInfo)("getUsers", 200, users));
-                res.status(200).json(users);
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.getUsers = getUsers;

@@ -59,20 +59,30 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dtoCheck = exports.isAuth = void 0;
+exports.dtoCheck = void 0;
 var class_transformer_1 = require("class-transformer");
 var class_validator_1 = require("class-validator");
 var loggerConfig_1 = __importStar(require("../../core/loggerConfig"));
-var isAuth = function (req, res, next) {
-    if (req.isAuthenticated()) {
-        next();
-    }
-    else {
-        loggerConfig_1.default.error((0, loggerConfig_1.loggerErr)("isAuth_middleware", 401, "You are not authorized!"));
-        res.status(401).json({ messgage: "You are not authorized!" });
-    }
-};
-exports.isAuth = isAuth;
+// // Extend the Express Request interface to include Passport.js properties
+// interface PassportRequest extends Request {
+// 	logout: () => void;
+// 	isAuthenticated: () => boolean;
+// 	user?: Express.User;
+// }
+// export const isAuth = (
+// 	req: PassportRequest,
+// 	res: Response,
+// 	next: NextFunction
+// ) => {
+// 	if (req.isAuthenticated()) {
+// 		next();
+// 	} else {
+// 		logger.error(
+// 			loggerErr("isAuth_middleware", 401, `You are not authorized!`)
+// 		);
+// 		res.status(401).json({ messgage: `You are not authorized!` });
+// 	}
+// };
 var dtoCheck = function (DtoClass, callback) {
     if (callback === void 0) { callback = null; }
     return function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {

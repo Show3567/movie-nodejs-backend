@@ -35,62 +35,61 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useJwtStrategy = void 0;
-var passport_jwt_1 = require("passport-jwt");
+exports.useCookieStrategy = void 0;
+var passport_cookie_1 = require("passport-cookie");
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 require("../../core/evnConfig");
 var user_entity_1 = require("../entities/user.entity");
 var typeOrmConfig_1 = require("../../core/typeOrmConfig");
 var verifyIdentitiy_1 = require("../cryptography/verifyIdentitiy");
 var _a = (0, verifyIdentitiy_1.getKey)("pub"), key = _a.key, algorithm = _a.algorithm;
-var options_ignaoreExpire = {
-    // * ~~~~~~~~~~~~~~~~~~ "Authentication": "Bearer <token>"
-    jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: key,
+var options = {
     algorithms: [algorithm],
     ignoreExpiration: true,
-    // issuer: 'enter issuer here',
-    // audience: 'enter audience here',
-    // passReqToCallback: false,
 };
-var options_expire = {
-    jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: key,
-    algorithms: [algorithm],
-    ignoreExpiration: false,
-};
+var userRepository = typeOrmConfig_1.AppDataSource.getRepository(user_entity_1.User);
 var strategyCreator = function (options) {
-    return new passport_jwt_1.Strategy(options, function (payload, done) { return __awaiter(void 0, void 0, void 0, function () {
-        var userRepository, user, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    userRepository = typeOrmConfig_1.AppDataSource.getRepository(user_entity_1.User);
-                    return [4 /*yield*/, userRepository.findOne({
-                            where: { email: payload.email },
-                        })];
-                case 1:
-                    user = _a.sent();
-                    if (user) {
-                        return [2 /*return*/, done(null, user)];
-                    }
-                    else {
-                        return [2 /*return*/, done(null, false, {
-                                message: "Incorrect username or password.",
+    return new passport_cookie_1.CookieStrategy(function (token, done) {
+        jsonwebtoken_1.default.verify(token, key, options, function (err, decoded) { return __awaiter(void 0, void 0, void 0, function () {
+            var payload, user, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (err) {
+                            return [2 /*return*/, done(err)];
+                        }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 4, , 5]);
+                        payload = decoded === null || decoded === void 0 ? void 0 : decoded.payload;
+                        if (!payload) return [3 /*break*/, 3];
+                        return [4 /*yield*/, userRepository.findOne({
+                                where: { email: payload.email },
                             })];
-                    }
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_1 = _a.sent();
-                    return [2 /*return*/, done(error_1, false)];
-                case 3: return [2 /*return*/];
-            }
-        });
-    }); });
+                    case 2:
+                        user = _a.sent();
+                        if (user) {
+                            return [2 /*return*/, done(null, user)];
+                        }
+                        else {
+                            return [2 /*return*/, done(null, false)];
+                        }
+                        _a.label = 3;
+                    case 3: return [3 /*break*/, 5];
+                    case 4:
+                        error_1 = _a.sent();
+                        return [2 /*return*/, done(error_1, false)];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        }); });
+    });
 };
-var useJwtStrategy = function (passport) {
-    passport.use("jwt_ign_exptime", strategyCreator(options_ignaoreExpire));
-    passport.use("jwt", strategyCreator(options_expire));
+var useCookieStrategy = function (passport) {
+    passport.use("cookie", strategyCreator(options));
 };
-exports.useJwtStrategy = useJwtStrategy;
+exports.useCookieStrategy = useCookieStrategy;

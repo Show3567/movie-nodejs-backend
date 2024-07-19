@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.errorHandler = void 0;
+exports.errorHandler = errorHandler;
 var ApiError_1 = require("./ApiError");
 var loggerConfig_1 = __importStar(require("../core/loggerConfig"));
 function errorHandler(err, req, res, next) {
@@ -36,4 +36,3 @@ function errorHandler(err, req, res, next) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 }
-exports.errorHandler = errorHandler;

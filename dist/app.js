@@ -40,31 +40,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
+var compression_1 = __importDefault(require("compression"));
 var authConfig_1 = require("./core/authConfig");
 var routes_1 = require("./core/routes");
 var errorHandler_1 = require("./errors/errorHandler");
+var swagger_1 = require("./tools/swagger/swagger");
 var loggerConfig_1 = __importDefault(require("./core/loggerConfig"));
-// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ database connection;
+// * ~~~~~~~~~~~~~~~~~~~~ database connection;
 require("./core/typeOrmConfig");
-// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ env config;
+// * ~~~~~~~~~~~~~~~~~~~~ env config;
 require("./core/evnConfig");
-// console.log(process.env.NODE_ENV);
-// console.log(process.env.TEST);
+var gracefulShutdown_1 = require("./core/gracefulShutdown");
+// * ~~~~~~~~~~~~~~~~~~~~ server;
+var port = process.env.PORT || 4231;
 (function () { return __awaiter(void 0, void 0, void 0, function () {
-    var app, port;
+    var app, server;
     return __generator(this, function (_a) {
         app = (0, express_1.default)();
-        // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ auth config;
+        // * ~~~~~~~~~~~~~~~~~~~~ compression;
+        app.use((0, compression_1.default)());
+        // * ~~~~~~~~~~~~~~~~~~~~ auth config;
         (0, authConfig_1.authConfig)(app);
-        // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Router and MiddleWare handler;
+        // * ~~~~~~~~~~~~~~~~~~~~ Router and MiddleWare handler;
         (0, routes_1.routersConfig)(app);
-        // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ global error handler;
+        // * ~~~~~~~~~~~~~~~~~~~~ global error handler;
         app.use(errorHandler_1.errorHandler);
-        port = process.env.PORT || 4231;
-        app.listen(port, function () {
+        // * ~~~~~~~~~~~~~~~~~~~~ Swagger;
+        (0, swagger_1.setupSwagger)(app);
+        server = app.listen(port, function () {
             loggerConfig_1.default.info("Server is running on port: ".concat(port));
             console.log("Server is running on port: ".concat(port));
         });
+        // * ~~~~~~~~~~~~~~~~~~~~ gracefulShutdown ^_^;
+        process.on("SIGTERM", function () { return (0, gracefulShutdown_1.handleSIGTERM)(server); });
+        process.on("SIGINT", gracefulShutdown_1.handleSIGINT);
         return [2 /*return*/];
     });
 }); })();
@@ -72,23 +81,36 @@ require("./core/evnConfig");
   & init project, install express;
   $ npm init
   $ npm i express
+  $ npm i @types/express
+
   & nodemon with ts;
-  $ npm install -D nodemon typescript ts-node
+  $ npm install -D nodemon typescript ts-node esm
+
   & edit tsconfig.json;
     "outDir": "./dist"
+
   & add start and build in package.josn script;
     "start": "npx nodemon --exec ts-node ./src/app.ts",
         "build": "tsc"
+
   & dotenv to use process.env;
   $ npm install dotenv
   $ npm install --save-dev @types/dotenv
+  & set env;
+  $ npm install --save-dev cross-env
 
   & mongoose;
   $ npm install mongoose
   $ npm install --save-dev @types/mongoose
+
   & mySql;
   $ npm install typescript @types/node mysql2
   $ npm install --save-dev @types/mysql
+
+  & postgre
+  $ npm install typeorm pg reflect-metadata
+  $ npm install typescript ts-node @types/node --save-dev
+
   & TypeOrm;
   $ npm install typeorm mysql reflect-metadata
   $ npm install --save-dev typescript @types/node ts-node
@@ -117,9 +139,6 @@ require("./core/evnConfig");
   & handle cros issue;
   $ npm install cors @types/cors
 
-  & set env;
-  $ npm install --save-dev cross-env
-
   & logger;
   $ npm install winston
   $ npm install @types/winston --save-dev
@@ -133,4 +152,12 @@ require("./core/evnConfig");
   $ docker stop <container-id-or-name>
   $ docker rm <container-id-or-name> // optional, this will remove the image;
   $ docker run -p 8800:3344 -d <your-image-name> // recreate the image;
+
+  & add swagger
+  $ npm i swagger-ui-express @types/swagger-ui-express
+  $ npm i swagger-jsdoc @types/swagger-jsdoc
+  
+  & compression the header to reduce the package size
+  $ npm i compression
+  $ npm i --save-dev @types/compression
 */

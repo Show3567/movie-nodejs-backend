@@ -9,3 +9,7 @@ var evnPath = process.env.NODE_ENV === "production" ? ".env.production" : ".env"
 dotenv_1.default.config({
     path: node_path_1.default.resolve(__dirname, "../../", evnPath),
 });
+/*
+  & after using nodejs  20.6.1
+  $ node --env-file .env index.js
+*/

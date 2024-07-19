@@ -12,7 +12,7 @@ var movies_controller_1 = __importDefault(require("../movies/movies.controller")
 var routersConfig = function (app) {
     app.use(express_1.default.json());
     app.use((0, cors_1.default)());
-    app.use("/api/v1/auth", user_controller_1.default);
+    app.use("/api/v1/auth", user_controller_1.default); // localhost:5566/api/v1/auth/signin
     // * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ movie router;
     app.use("/api/v1/", movies_controller_1.default);
     app.use("/api/v1/universities", javahw_controller_1.default);
