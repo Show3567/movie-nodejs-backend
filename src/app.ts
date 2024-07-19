@@ -1,4 +1,5 @@
 import express, { Express } from "express";
+import compression from "compression";
 import { authConfig } from "./core/authConfig";
 import { routersConfig } from "./core/routes";
 import { errorHandler } from "./errors/errorHandler";
@@ -17,6 +18,9 @@ const port = process.env.PORT || 4231;
 
 (async () => {
 	const app: Express = express();
+
+	// * ~~~~~~~~~~~~~~~~~~~~ compression;
+	app.use(compression());
 
 	// * ~~~~~~~~~~~~~~~~~~~~ auth config;
 	authConfig(app);
@@ -118,5 +122,9 @@ const port = process.env.PORT || 4231;
 
   & add swagger
   $ npm i swagger-ui-express @types/swagger-ui-express
-  $ npm i swagger-jsdoc @types/swagger-jsdoc      
+  $ npm i swagger-jsdoc @types/swagger-jsdoc   
+  
+  & compression the header to reduce the package size
+  $ npm i compression            
+  $ npm i --save-dev @types/compression
 */

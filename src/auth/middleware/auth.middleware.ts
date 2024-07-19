@@ -3,27 +3,27 @@ import { ValidationError, validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
 import logger, { loggerErr } from "../../core/loggerConfig";
 
-// Extend the Express Request interface to include Passport.js properties
-interface PassportRequest extends Request {
-	logout: () => void;
-	isAuthenticated: () => boolean;
-	user?: Express.User;
-}
+// // Extend the Express Request interface to include Passport.js properties
+// interface PassportRequest extends Request {
+// 	logout: () => void;
+// 	isAuthenticated: () => boolean;
+// 	user?: Express.User;
+// }
 
-export const isAuth = (
-	req: PassportRequest,
-	res: Response,
-	next: NextFunction
-) => {
-	if (req.isAuthenticated()) {
-		next();
-	} else {
-		logger.error(
-			loggerErr("isAuth_middleware", 401, `You are not authorized!`)
-		);
-		res.status(401).json({ messgage: `You are not authorized!` });
-	}
-};
+// export const isAuth = (
+// 	req: PassportRequest,
+// 	res: Response,
+// 	next: NextFunction
+// ) => {
+// 	if (req.isAuthenticated()) {
+// 		next();
+// 	} else {
+// 		logger.error(
+// 			loggerErr("isAuth_middleware", 401, `You are not authorized!`)
+// 		);
+// 		res.status(401).json({ messgage: `You are not authorized!` });
+// 	}
+// };
 
 export const dtoCheck = (
 	DtoClass: any,
