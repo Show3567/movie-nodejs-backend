@@ -8,8 +8,10 @@
 		"start": "cross-env NODE_ENV=development npx nodemon --exec ts-node ./src/app.ts",
 		"start:cluster": "cross-env NODE_ENV=development npx nodemon --exec ts-node ./src/core/cluster/clusterMain.ts",
 		"start:dev": "npx nodemon --exec ts-node ./src/app.ts",
-		"build:pro": "tsc",
-		"start:pro": "cross-env NODE_ENV=production node dist/app.js"
+		"build:pro": "tsc && copyfiles -u 1 src/**/*.pem dist",
+		"start:pro": "cross-env NODE_ENV=production node dist/app.js",
+		"serve:pm2": "pm2 start dist/app.js --name movie-nodejs-backend --watch",
+		"remove:pm2": "pm2 delete movie-nodejs-backend"
 	},
 	"author": "",
 	"license": "ISC",
@@ -60,6 +62,7 @@
 		"@types/passport-jwt": "^4.0.1",
 		"@types/passport-local": "^1.0.38",
 		"@types/winston": "^2.4.4",
+		"copyfiles": "^2.4.1",
 		"cross-env": "^7.0.3",
 		"nodemon": "^3.1.0",
 		"ts-node": "^10.9.2",

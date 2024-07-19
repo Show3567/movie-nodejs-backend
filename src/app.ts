@@ -127,4 +127,12 @@ const port = process.env.PORT || 4231;
   & compression the header to reduce the package size
   $ npm i compression            
   $ npm i --save-dev @types/compression
+
+  & using pm2
+  $ pm2 start dist/app.js --name movie-nodejs-backend --watch
+  $ pm2 logs my-app
+  $ pm2 restart my-app
+  $ pm2 reload my-app --watch false
+  $ pm2 stop movie-nodejs-backend
+  $ pm2 delete movie-nodejs-backend
 */
