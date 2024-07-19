@@ -135,4 +135,7 @@ const port = process.env.PORT || 4231;
   $ pm2 reload my-app --watch false
   $ pm2 stop movie-nodejs-backend
   $ pm2 delete movie-nodejs-backend
+
+  & copyfiles for build resouse which not ts file: check the package.json "script" --> "build:pro"
+  npm install copyfiles --save-dev
 */
