@@ -16,6 +16,7 @@ import { CheckEmailDto } from "./dto/check-email.dto";
 import { SignInCredentialsDto } from "./dto/signin.dto";
 import { SignUpCredentialsDto } from "./dto/signup.dto";
 import { UpdateCredentialDto } from "./dto/update-user.dto";
+import { RefreshTokenDto } from "./dto/refresh-token.dto";
 
 const userRouters = express.Router();
 
@@ -207,11 +208,13 @@ userRouters
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-userRouters.route("/refresh-token").get(
-	// dtoCheck(RefreshTokenDto),
-	passport.authenticate("jwt_ign_exptime", { session: false }),
-	refreshToken
-);
+userRouters
+	.route("/refresh-token")
+	.get(
+		dtoCheck(RefreshTokenDto),
+		passport.authenticate("jwt_ign_exptime", { session: false }),
+		refreshToken
+	);
 /**
  * @swagger
  * /api/v1/auth/users/{id}:
