@@ -13,3 +13,12 @@ export const routersConfig = (app: Express) => {
 	app.use("/api/v1/", movieRouter);
 	app.use("/api/v1/universities", universityRouter);
 };
+
+// www.movie.com/api/v3/products
+// www.movie.com/api/v3/products?id=12&local=sdfs
+// get post, post vs. get, put vs. patch
+// payload, check dto
+// status code
+
+// graphql: post, static www.movie.com/api/v3/
+// query vs. mutation
