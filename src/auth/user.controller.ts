@@ -208,11 +208,12 @@ userRouters
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-userRouters.route("/refresh-token").get(
-	// dtoCheck(RefreshTokenDto),
-	passport.authenticate("jwt_ign_exptime", { session: false }),
-	refreshToken
-);
+userRouters
+	.route("/refresh-token")
+	.get(
+		passport.authenticate("jwt_ign_exptime", { session: false }),
+		refreshToken
+	);
 /**
  * @swagger
  * /api/v1/auth/users/{id}:
