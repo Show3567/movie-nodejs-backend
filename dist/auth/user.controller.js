@@ -190,9 +190,9 @@ userRouters
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-userRouters.route("/refresh-token").get(
-// dtoCheck(RefreshTokenDto),
-passport_1.default.authenticate("jwt_ign_exptime", { session: false }), user_service_1.refreshToken);
+userRouters
+    .route("/refresh-token")
+    .get(passport_1.default.authenticate("jwt_ign_exptime", { session: false }), user_service_1.refreshToken);
 /**
  * @swagger
  * /api/v1/auth/users/{id}:

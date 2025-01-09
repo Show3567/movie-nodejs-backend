@@ -18,3 +18,10 @@ var routersConfig = function (app) {
     app.use("/api/v1/universities", javahw_controller_1.default);
 };
 exports.routersConfig = routersConfig;
+// www.movie.com/api/v3/products
+// www.movie.com/api/v3/products?id=12&local=sdfs
+// get post, post vs. get, put vs. patch
+// payload, check dto
+// status code
+// graphql: post, static www.movie.com/api/v3/
+// query vs. mutation
