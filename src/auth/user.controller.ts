@@ -52,12 +52,18 @@ const userRouters = express.Router();
  *     SignUpCredentialsDto:
  *       type: object
  *       properties:
- *         username:
+ *         email:
  *           type: string
  *           example: 'user123'
  *         password:
  *           type: string
  *           example: 'password123'
+ *         username:
+ *           type: string
+ *           example: 'David'
+ *         role:
+ *           type: string
+ *           example: 'User'
  *     CheckEmailDto:
  *       type: object
  *       properties:
@@ -67,12 +73,9 @@ const userRouters = express.Router();
  *     UpdateCredentialDto:
  *       type: object
  *       properties:
- *         email:
+ *         role:
  *           type: string
- *           example: 'user@example.com'
- *         password:
- *           type: string
- *           example: 'newpassword123'
+ *           example: 'Admin'
  *     RefreshTokenDto:
  *       type: object
  *       properties:
