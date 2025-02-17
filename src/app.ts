@@ -45,6 +45,8 @@ const port = process.env.PORT || 4231;
 	process.on("SIGINT", handleSIGINT);
 })();
 
+console.log("hello");
+
 /* 
   & init project, install express;
   $ npm init
