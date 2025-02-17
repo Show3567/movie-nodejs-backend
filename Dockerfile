@@ -20,7 +20,7 @@ COPY . .
 COPY .env .env.production ./
 
 # Build the NestJS app
-RUN npm run build:dev
+RUN npm run build:pro
 
 # Stage 2: Serve the Angular SSR app using Node.js
 FROM node:20-alpine
@@ -42,4 +42,4 @@ RUN npm ci --only=production
 EXPOSE 3344
 
 # Command to run the app
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "start:pro"]
