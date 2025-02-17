@@ -15,10 +15,12 @@ RUN npm ci
 
 # Bundle app source
 COPY . .
-# Build the NestJS app
-# RUN npm run set:pro
+# Copy .env files
 
-RUN npm run build:pro
+COPY .env .env.production ./
+
+# Build the NestJS app
+RUN npm run build:dev
 
 # Stage 2: Serve the Angular SSR app using Node.js
 FROM node:20-alpine
@@ -31,6 +33,7 @@ COPY --from=build /app/dist /app/dist
 
 # Copy only the necessary files for running the SSR server
 COPY --from=build /app/package*.json /app/
+COPY --from=build /app/.env /app/.env.production /app/
 
 # Install only production dependencies
 RUN npm ci --only=production
@@ -39,4 +42,4 @@ RUN npm ci --only=production
 EXPOSE 3344
 
 # Command to run the app
-CMD ["npm", "run", "start:pro"]
+CMD ["npm", "run", "start:dev"]
