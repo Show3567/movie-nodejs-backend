@@ -7,20 +7,14 @@ import "./evnConfig";
 export const AppDataSource = new DataSource({
 	type: "mongodb",
 	url: process.env.MODB_URL,
-	useUnifiedTopology: true,
-	useNewUrlParser: true,
 	entities: [User, SessionEntity],
 	synchronize: true,
 });
 
-(async () => {
-	try {
-		await AppDataSource.initialize();
-		console.log(`connection successful!`);
-	} catch (error) {
-		console.error("Error during Data Source initialization", error);
-	}
-})();
+export async function initializeDb(): Promise<void> {
+	await AppDataSource.initialize();
+	console.log("connection successful!");
+}
 
 /* Connect to local postgres 
     return {

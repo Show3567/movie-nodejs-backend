@@ -7,7 +7,7 @@ import { setupSwagger } from "./tools/swagger/swagger";
 import logger from "./core/loggerConfig";
 
 // * ~~~~~~~~~~~~~~~~~~~~ database connection;
-import "./core/typeOrmConfig";
+import { initializeDb } from "./core/typeOrmConfig";
 
 // * ~~~~~~~~~~~~~~~~~~~~ env config;
 import "./core/evnConfig";
@@ -18,6 +18,9 @@ import { handleSIGINT, handleSIGTERM } from "./core/gracefulShutdown";
 const port = process.env.PORT || 4231;
 
 (async () => {
+	// * ~~~~~~~~~~~~~~~~~~~~ wait for DB before accepting requests;
+	await initializeDb();
+
 	const app: Express = express();
 
 	// * ~~~~~~~~~~~~~~~~~~~~ compression;

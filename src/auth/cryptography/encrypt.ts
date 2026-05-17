@@ -6,9 +6,7 @@ export const encryptWithPublicKey = (
 		| crypto.RsaPublicKey
 		| crypto.RsaPrivateKey
 		| crypto.KeyLike,
-	message:
-		| WithImplicitCoercion<string>
-		| { [Symbol.toPrimitive](hint: "string"): string }
+	message: string
 ) => {
 	const bufferMessage = Buffer.from(message, "utf-8");
 	return crypto.publicEncrypt(publicKey, bufferMessage);
@@ -17,9 +15,7 @@ export const encryptWithPublicKey = (
 // * ~~~~~~~ PrivateKey ~~~~~~~;
 export const encryptWithPrivateKey = (
 	privateKey: crypto.RsaPrivateKey | crypto.KeyLike,
-	message:
-		| WithImplicitCoercion<string>
-		| { [Symbol.toPrimitive](hint: "string"): string }
+	message: string
 ) => {
 	const bufferMessage = Buffer.from(message, "utf-8");
 	return crypto.privateEncrypt(privateKey, bufferMessage);

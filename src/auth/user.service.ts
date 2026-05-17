@@ -123,7 +123,7 @@ export const updateUser: RequestHandler = async (req, res) => {
 
 // & ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ deleteUserById;
 export const deleteUserById: RequestHandler = async (req, res) => {
-	const id = req.params.id;
+	const id = req.params.id as string;
 	const userfromdb = await userRepo.findOne({
 		where: { _id: new ObjectId(id) as any },
 	});
@@ -150,7 +150,7 @@ export const deleteUserById: RequestHandler = async (req, res) => {
 			message: `You don't have the permission to delete a user.`,
 		});
 	}
-	await userRepo.delete({ _id: new ObjectId(id) as any });
+	await userRepo.delete({ _id: new ObjectId(id as string) as any });
 	logger.info(loggerInfo("updateUser", 201, { message: "success!" }));
 	res.status(204);
 };
